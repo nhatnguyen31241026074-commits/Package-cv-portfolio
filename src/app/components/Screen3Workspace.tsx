@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { getRoleLevelData } from "../../data/roleData";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Check,
@@ -1029,7 +1030,7 @@ function TopNav({
         </div>
         <div style={{ width: 1, height: 16, background: "#E2E8F0", flexShrink: 0 }} />
         <span style={{ fontSize: 13, fontWeight: 600, color: "#020818", letterSpacing: "-0.02em" }}>
-          Product Management Guide
+          Career Survival Kit
         </span>
         <div style={{ marginLeft: 6, padding: "2px 9px", borderRadius: 99, background: "rgba(14,86,250,0.07)", border: "1px solid rgba(14,86,250,0.13)" }}>
           <span style={{ fontSize: 10, fontWeight: 700, color: "#0E56FA", letterSpacing: "0.06em", textTransform: "uppercase" }}>
@@ -1151,7 +1152,7 @@ function SectionDivider({ text, active }: { text: string; active?: boolean }) {
 // ─── Left CV Column ───────────────────────────────────────────────────────────
 
 function LeftCVColumn({
-  level, activeSection, hoveredSection, onHover, onActivate, checks,
+  level, activeSection, hoveredSection, onHover, onActivate, checks, selectedRole,
 }: {
   level: DiagnosticLevel;
   activeSection: CVSection;
@@ -1159,8 +1160,10 @@ function LeftCVColumn({
   onHover: (id: CVSection | null) => void;
   onActivate: (id: CVSection) => void;
   checks: [boolean, boolean, boolean];
+  selectedRole: string | null;
 }) {
   const cv = CV_DATA[level];
+  const roleData = getRoleLevelData(selectedRole, level);
   const stageIndex = checks.filter(Boolean).length;
 
   const ACTION_VERBS = new Set(["led","built","conducted","presented","assisted","attended","redesigned","created","defined","shipped","prioritised","analysed","coordinated","designed","collaborated","optimised","spearheaded","orchestrated","championed","drove","owned","architected","secured"]);
@@ -1241,7 +1244,7 @@ function LeftCVColumn({
                 {cv.name}
               </div>
               <div style={{ fontSize: 12, fontWeight: 500, color: "#64748b", marginBottom: 8, letterSpacing: "-0.01em" }}>
-                {cv.title}
+                {roleData.cvTitle}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                 {[{ icon: Mail, text: cv.email }, { icon: MapPin, text: cv.location }, { icon: ExternalLink, text: cv.linkedin }].map(({ icon: Icon, text }, i) => (
@@ -1277,9 +1280,9 @@ function LeftCVColumn({
                 </div>
               )}
               <AnimatePresence mode="wait">
-                <motion.p key={`sum-${level}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}
+                <motion.p key={`sum-${level}-${selectedRole}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}
                   style={{ fontSize: 11, color: "#334155", lineHeight: 1.65, margin: 0, paddingLeft: 2 }}>
-                  {cv.summary}
+                  {roleData.cvSummary}
                 </motion.p>
               </AnimatePresence>
             </CVSectionBlock>
@@ -1513,22 +1516,34 @@ function StepChecklist({
 // ─── Right Insight Panel ──────────────────────────────────────────────────────
 
 function RightInsightPanel({
-  section, level, checks, onChecksChange, onContinue,
+  section, level, checks, onChecksChange, onContinue, selectedRole,
 }: {
   section: CVSection;
   level: DiagnosticLevel;
   checks: [boolean, boolean, boolean];
   onChecksChange: (c: [boolean, boolean, boolean]) => void;
   onContinue: () => void;
+  selectedRole: string | null;
 }) {
   const data = PANEL_DATA[section][level];
+  const roleData = getRoleLevelData(selectedRole, level);
+  // Override HR data and checklist with role-specific content
+  const hrQuote = roleData.hrQuote;
+  const hrName = roleData.hrName;
+  const hrRole = roleData.hrRole;
+  const hrCompany = roleData.hrCompany;
+  const checklistItems = section === "experience"
+    ? roleData.experienceChecklist
+    : section === "summary"
+    ? roleData.summaryChecklist
+    : data.hrCompany && TRANSFORM[section][level].checklistItems;
   const transform = TRANSFORM[section][level];
   const panelKey = `${section}-${level}`;
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<"helpful" | "love" | null>(null);
   const stageIndex = checks.filter(Boolean).length;
   const allChecked = stageIndex === 3;
-  const companyInfo = COMPANY_INFO[data.hrCompany];
+  const companyInfo = COMPANY_INFO[hrCompany];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(data.aiPrompt).catch(() => {});
@@ -1578,11 +1593,11 @@ function RightInsightPanel({
             <div style={{ borderRadius: 14, border: "1px solid #E2E8F0", background: "white", padding: "16px 18px", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                 <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #E2E8F0" }}>
-                  <img src={data.hrAvatar === "man" ? AVATAR_MAN : AVATAR_WOMAN} alt={data.hrName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src={data.hrAvatar === "man" ? AVATAR_MAN : AVATAR_WOMAN} alt={hrName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#020818", letterSpacing: "-0.02em" }}>{data.hrName}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#020818", letterSpacing: "-0.02em" }}>{hrName}</span>
                     {/* Enhanced company badge */}
                     <div style={{
                       display: "flex",
@@ -1606,7 +1621,7 @@ function RightInsightPanel({
                       </span>
                     </div>
                   </div>
-                  <div style={{ fontSize: 10.5, color: "#94a3b8" }}>{data.hrRole}</div>
+                  <div style={{ fontSize: 10.5, color: "#94a3b8" }}>{hrRole}</div>
                 </div>
                 {/* Verified badge */}
                 <div style={{
@@ -1625,7 +1640,7 @@ function RightInsightPanel({
               <div style={{ padding: "12px 14px", borderRadius: 10, background: "#FAFBFF", border: "1px solid #F1F5F9", position: "relative" }}>
                 <span style={{ position: "absolute", top: 8, left: 12, fontSize: 28, color: "#BFDBFE", lineHeight: 1, fontFamily: "Georgia, serif", pointerEvents: "none" }}>"</span>
                 <p style={{ fontSize: 12.5, color: "#334155", lineHeight: 1.65, margin: 0, paddingTop: 16, fontStyle: "italic", letterSpacing: "-0.01em" }}>
-                  {data.hrQuote}
+                  {hrQuote}
                 </p>
               </div>
               
@@ -1719,7 +1734,7 @@ function RightInsightPanel({
                 Tick each step — watch the CV bullet transform on the left ←
               </p>
               <StepChecklist
-                items={transform.checklistItems}
+                items={(checklistItems as [string, string, string]) || transform.checklistItems}
                 checks={checks}
                 onChange={onChecksChange}
               />
@@ -1934,7 +1949,7 @@ interface Screen3Props {
   onComplete: (bullet: string) => void;
 }
 
-export function Screen3Workspace({ level, onSetLevel, onComplete }: Screen3Props) {
+export function Screen3Workspace({ level, onSetLevel, selectedRole, onComplete }: Screen3Props) {
   const [activeSection, setActiveSection] = useState<CVSection>("experience");
   const [hoveredSection, setHoveredSection] = useState<CVSection | null>(null);
   const [checks, setChecks] = useState<[boolean, boolean, boolean]>([false, false, false]);
@@ -2011,6 +2026,7 @@ export function Screen3Workspace({ level, onSetLevel, onComplete }: Screen3Props
           onHover={setHoveredSection}
           onActivate={handleActivate}
           checks={checks}
+          selectedRole={selectedRole}
         />
         <RightInsightPanel
           section={activeSection}
@@ -2018,6 +2034,7 @@ export function Screen3Workspace({ level, onSetLevel, onComplete }: Screen3Props
           checks={checks}
           onChecksChange={handleChecksChange}
           onContinue={handleContinue}
+          selectedRole={selectedRole}
         />
       </div>
 
