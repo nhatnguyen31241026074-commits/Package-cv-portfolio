@@ -12,6 +12,7 @@ import {
   ExternalLink,
   HelpCircle,
 } from "lucide-react";
+import { trackEvent, handleScrollDepthTracking } from "../../utils/analytics";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -62,9 +63,11 @@ export function PJXWorkspace({ trackId, onBack }: PJXWorkspaceProps) {
   const isUnlocked = checkedCount >= 3;
 
   const handleToggleCheck = (index: number) => {
-    setCheckedItems((prev) =>
-      prev.map((checked, i) => (i === index ? !checked : checked))
-    );
+    setCheckedItems((prev) => {
+      const next = prev.map((checked, i) => (i === index ? !checked : checked));
+      trackEvent("checklist_toggled", { item_index: index, is_checked: next[index], total_checked: next.filter(Boolean).length });
+      return next;
+    });
 
     // Highlight corresponding bullet
     if (!checkedItems[index]) {
@@ -178,7 +181,10 @@ export function PJXWorkspace({ trackId, onBack }: PJXWorkspaceProps) {
             return (
               <motion.button
                 key={lvl}
-                onClick={() => setLevel(lvl)}
+                onClick={() => {
+                  setLevel(lvl);
+                  trackEvent("level_switched", { level: lvl });
+                }}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 style={{
@@ -648,6 +654,7 @@ export function PJXWorkspace({ trackId, onBack }: PJXWorkspaceProps) {
 
         {/* RIGHT COLUMN: HR Insight Panel */}
         <div
+          onScroll={(e) => handleScrollDepthTracking(e, "PJXWorkspace_HRPanel")}
           style={{
             background: "#F8FAFC",
             padding: "40px 48px",

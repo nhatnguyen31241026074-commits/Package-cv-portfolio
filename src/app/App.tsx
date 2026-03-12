@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Screen1Pillars } from "./components/Screen1Pillars";
 import { Screen3Workspace } from "./components/Screen3Workspace";
 import { Screen4Finish } from "./components/Screen4Finish";
 import { MobileWorkspacePreview } from "./components/MobileWorkspacePreview";
 import { DiagnosticLevel } from "./types";
+import { trackEvent } from "../utils/analytics";
 
 export default function App() {
   const [screen, setScreen] = useState<1 | 3 | 4>(1);
@@ -13,6 +14,28 @@ export default function App() {
   const [workspaceLevel, setWorkspaceLevel] = useState<DiagnosticLevel>("developing");
   const [builtBullet, setBuiltBullet] = useState<string>("");
   const [showMobile, setShowMobile] = useState(false);
+
+  // Analytics: Track Traffic Source & Time on Page
+  useEffect(() => {
+    // Track acquisition source
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get("source") || params.get("utm_source");
+    if (source) {
+      trackEvent("page_view_source", { source });
+    }
+
+    // Measure time on page
+    const startTime = Date.now();
+    const handleUnload = () => {
+      const timeSpent = Math.round((Date.now() - startTime) / 1000);
+      trackEvent("session_end", { time_on_page_seconds: timeSpent });
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, []);
 
   const handleBulletComplete = (bullet: string) => {
     setBuiltBullet(bullet);
@@ -101,7 +124,12 @@ export default function App() {
                 setSelectedPillar(p);
                 setSelectedRole(null);
               }}
-              onSelectRole={setSelectedRole}
+              onSelectRole={(r) => {
+                setSelectedRole(r);
+                if (r) {
+                  trackEvent("role_selected", { role: r });
+                }
+              }}
               onNext={() => setScreen(3)}
             />
           </motion.div>

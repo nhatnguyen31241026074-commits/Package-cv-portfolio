@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { getRoleLevelData } from "../../data/roleData";
+import { trackEvent, handleScrollDepthTracking } from "../../utils/analytics";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Check,
@@ -1561,6 +1562,7 @@ function RightInsightPanel({
       `}</style>
       <div
         className="cv-right-scroll"
+        onScroll={(e) => handleScrollDepthTracking(e, "Screen3Workspace_HRPanel")}
         style={{ width: "50%", overflowY: "auto", background: "white", display: "flex", flexDirection: "column" }}
       >
         <AnimatePresence mode="wait">
@@ -1892,7 +1894,10 @@ function RightInsightPanel({
                   <motion.button
                     whileHover={{ scale: 1.02 }} 
                     whileTap={{ scale: 0.97 }}
-                    onClick={handleCopy}
+                    onClick={(e) => {
+                      trackEvent("prompt_copied");
+                      handleCopy();
+                    }}
                     style={{
                       display: "flex", alignItems: "center", gap: 7, padding: "9px 18px",
                       borderRadius: 9, background: copied ? "#16a34a" : "#0E56FA",

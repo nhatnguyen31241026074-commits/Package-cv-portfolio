@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { trackEvent, handleScrollDepthTracking } from "../../utils/analytics";
 import {
   Check,
   Lock,
@@ -1005,6 +1006,7 @@ function WsChecklist({ checks, onChange, feedback, onFeedback }: {
     if (checks[i]) { for (let j = i; j < 3; j++) next[j] = false; }
     else { for (let j = 0; j <= i; j++) next[j] = true; }
     onChange(next);
+    trackEvent("checklist_toggled", { item_index: i, is_checked: next[i], total_checked: next.filter(Boolean).length });
   };
 
   return (
@@ -1139,7 +1141,11 @@ function WsAIPromptBox({ allChecked, stageIndex }: { allChecked: boolean; stageI
             <span style={{ fontSize: 8.5, fontWeight: 800, padding: "2px 7px", borderRadius: 99, background: "#16a34a", color: "white", textTransform: "uppercase" }}>✓ Unlocked</span>
           </div>
           <p style={{ fontSize: 11.5, color: "#64748b", lineHeight: 1.6, margin: "0 0 12px" }}>Copy to ChatGPT for an HR-approved XYZ format rewrite.</p>
-          <motion.button whileTap={{ scale: 0.97 }} onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 2200); }} style={{
+          <motion.button whileTap={{ scale: 0.97 }} onClick={() => { 
+            setCopied(true); 
+            trackEvent("prompt_copied");
+            setTimeout(() => setCopied(false), 2200); 
+          }} style={{
             display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
             padding: "10px 20px", width: "100%", borderRadius: 12, border: "none",
             background: copied ? "#16a34a" : "#0E56FA", color: "white",
@@ -1197,7 +1203,10 @@ function WsBottomSheet({ checks, onChecksChange, feedback, onFeedback, stageInde
         </div>
         <h2 style={{ fontSize: 18, fontWeight: 800, color: "#020818", letterSpacing: "-0.04em", margin: "8px 0 0" }}>Mastering Experience</h2>
       </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 18px 20px" }}>
+      <div 
+        onScroll={(e) => handleScrollDepthTracking(e, "MobilePreview_BottomSheet")}
+        style={{ flex: 1, overflowY: "auto", padding: "16px 18px 20px" }}
+      >
         <style>{`.ws-scroll::-webkit-scrollbar { width: 0; }`}</style>
         <div className="ws-scroll" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <WsMentorCard />
@@ -1340,6 +1349,11 @@ export function MobileWorkspacePreview({ onBack }: { onBack: () => void }) {
   const [wsLevel, setWsLevel] = useState<DiagnosticLevel>("developing");
   const [slideDir, setSlideDir] = useState<1 | -1>(1);
 
+  const handleLevelChange = (newLevel: DiagnosticLevel) => {
+    setWsLevel(newLevel);
+    trackEvent("level_switched", { level: newLevel, context: "mobile" });
+  };
+
   const goTo = (step: 1 | 2 | 3) => {
     setSlideDir(step > mobileStep ? 1 : -1);
     setMobileStep(step);
@@ -1478,7 +1492,7 @@ export function MobileWorkspacePreview({ onBack }: { onBack: () => void }) {
               {mobileStep === 3 && (
                 <Screen3
                   level={wsLevel}
-                  onLevelChange={setWsLevel}
+                  onLevelChange={handleLevelChange}
                   onBack={() => goTo(2)}
                 />
               )}
