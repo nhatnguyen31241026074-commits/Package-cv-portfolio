@@ -1,0 +1,108 @@
+﻿
+> @figma/my-make-file@0.0.1 build
+> vite build
+
+[36mvite v6.3.5 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 97 modules transformed.
+node.exe : [31mΓ£ù[39m 
+Build failed in 811ms
+At line:1 char:1
++ & "D:\Blockchain/node.exe" 
+"D:\Blockchain/node_modules/n
+pm/bin/npm-cl ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: ([31mΓ£  
+  ù[39m Build failed in 8   
+ 11ms:String) [], RemoteE    
+xception
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+[31merror during build:
+[31m[vite:esbuild] 
+Transform failed with 1 
+error:
+D:/ProjectX_Package-CV/src/da
+ta/roleData.ts:1:56: ERROR: 
+Syntax error "n"[31m
+file: [36mD:/ProjectX_Packag
+e-CV/src/data/roleData.ts:1:5
+6[31m
+[33m
+[33mSyntax error "n"[33m
+1  |  export type Level = 
+'starter' | 'developing' | 
+'ready';\n\nexport interface 
+RoleLevelData {\n  cvTitle: 
+string;\n  cvSummary: 
+string;\n  
+experienceChecklist: 
+[string, string, string];\n  
+summaryChecklist: [string, 
+string, string];\n  
+actionVerbs: string[];\n  
+keySkills: string[];\n  
+hrQuote: string;\n  hrName: 
+string;\n  hrRole: string;\n 
+ hrCompany: 'shopee' | 
+'google' | 'grab' | 'vng' | 
+'startup' | 'scaleup';\n  
+hrQuotes?: {\n    
+experience?: string;\n    
+summary?: string;\n    
+header?: string;\n    
+projects?: string;\n  
+};\n}\n\nexport interface 
+RoleData {\n  starter: 
+RoleLevelData;\n  
+developing: RoleLevelData;\n 
+ ready: 
+RoleLevelData;\n}\n\nexport 
+const ROLE_DATA: 
+Record<string, RoleData> = {
+   |                         
+                             
+    ^
+2  |    "Software 
+Engineering (SWE)": {
+3  |      "starter": {
+[31m
+    at failureErrorWithLog (D
+:\ProjectX_Package-CV\node_mo
+dules\esbuild\lib\main.js:146
+7:15)
+    at D:\ProjectX_Package-CV
+\node_modules\esbuild\lib\mai
+n.js:736:50
+    at 
+responseCallbacks.<computed> 
+(D:\ProjectX_Package-CV\node_
+modules\esbuild\lib\main.js:6
+03:9)
+    at handleIncomingPacket (
+D:\ProjectX_Package-CV\node_m
+odules\esbuild\lib\main.js:65
+8:12)
+    at Socket.readFromStdout 
+(D:\ProjectX_Package-CV\node_
+modules\esbuild\lib\main.js:5
+81:7)
+    at Socket.emit 
+(node:events:519:28)
+    at addChunk (node:interna
+l/streams/readable:561:12)
+    at 
+readableAddChunkPushByteMode 
+(node:internal/streams/readab
+le:512:3)
+    at Readable.push (node:in
+ternal/streams/readable:392:5
+)
+    at Pipe.onStreamRead (nod
+e:internal/stream_base_common
+s:189:23)[39m
+

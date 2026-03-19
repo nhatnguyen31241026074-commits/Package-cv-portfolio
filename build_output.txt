@@ -1,0 +1,32 @@
+
+> @figma/my-make-file@0.0.1 build
+> vite build
+
+[36mvite v6.3.5 [32mbuilding for production...[36m[39m
+transforming...
+[32m✓[39m 7 modules transformed.
+
+[31m✗[39m Build failed in 279ms
+[31merror during build:
+[31m[vite:esbuild] Transform failed with 1 error:
+D:/ProjectX_Package-CV/src/app/components/Screen3Workspace.tsx:122:1: ERROR: Syntax error "n"[31m
+file: [36mD:/ProjectX_Package-CV/src/app/components/Screen3Workspace.tsx:122:1[31m
+[33m
+[33mSyntax error "n"[33m
+120|  
+121|  // The generic CV Data and Transform templates are now imported from cvTemplates.ts
+122|  \nconst PANEL_DATA: Record<CVSection, Record<DiagnosticLevel, PanelData>> = {
+   |   ^
+123|    experience: {
+124|      starter: {
+[31m
+    at failureErrorWithLog (D:\ProjectX_Package-CV\node_modules\esbuild\lib\main.js:1467:15)
+    at D:\ProjectX_Package-CV\node_modules\esbuild\lib\main.js:736:50
+    at responseCallbacks.<computed> (D:\ProjectX_Package-CV\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (D:\ProjectX_Package-CV\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (D:\ProjectX_Package-CV\node_modules\esbuild\lib\main.js:581:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)[39m

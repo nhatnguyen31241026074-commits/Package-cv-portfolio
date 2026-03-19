@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Download, ExternalLink, RotateCcw, Check } from "lucide-react";
+import { Download, ExternalLink, RotateCcw, Check, ArrowLeft } from "lucide-react";
+import { PROMPTS_DATA, SectionPrompts } from "../../data/promptsData";
+import { ROLE_TO_PROMPT_KEY } from "../../data/rolePromptMapping";
 
 // ── Confetti Canvas ────────────────────────────────────────────────
 
@@ -63,7 +65,8 @@ function ConfettiCanvas() {
           vy: Math.sin(angle) * speed - 5,
           width: Math.random() * 14 + 6,
           height: Math.random() * 8 + 4,
-          color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+          color:
+            CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
           rotation: Math.random() * 360,
           rotationSpeed: (Math.random() - 0.5) * 10,
           opacity: 1,
@@ -141,20 +144,36 @@ function ConfettiCanvas() {
 // ── Props ─────────────────────────────────────────────────────────
 
 interface Props {
-  bullet: string;
+  aiPrompt?: string;
+  bullet?: string;
   onRestart: () => void;
+  onBack?: () => void;
+  selectedRole?: string | null;
+}
+
+// Build combined master prompt from all 3 CV sections
+function buildCombinedPrompt(role: string | null): string {
+  const safeRole = role || "Product Management (PM)";
+  const promptKey = ROLE_TO_PROMPT_KEY[safeRole] ?? "Product Management (PM)";
+  const sectionData = PROMPTS_DATA[promptKey];
+  if (!sectionData) return "Prompt not available.";
+  const summary = sectionData["summary" as keyof SectionPrompts] ?? "";
+  const experience = sectionData["experience" as keyof SectionPrompts] ?? "";
+  const projects = sectionData["projects" as keyof SectionPrompts] ?? "";
+  return `=== YOUR COMPLETE CV REWRITE PROMPT FOR: ${safeRole.toUpperCase()} ===\n\n--- PART 1: PROFESSIONAL SUMMARY ---\n${summary}\n\n--- PART 2: EXPERIENCE BULLETS ---\n${experience}\n\n--- PART 3: PROJECTS SECTION ---\n${projects}\n\n=== END OF PROMPT ===\nPaste each section into ChatGPT, Claude, or Gemini individually for best results.`;
 }
 
 // ── Main Screen ───────────────────────────────────────────────────
 
-export function Screen4Finish({ bullet, onRestart }: Props) {
+export function Screen4Finish({ aiPrompt, bullet, onRestart, onBack, selectedRole }: Props) {
+  const combinedPrompt = buildCombinedPrompt(selectedRole ?? null);
+  const currentPrompt = combinedPrompt || aiPrompt || "Prompt not available — please restart.";
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(bullet).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    navigator.clipboard.writeText(currentPrompt);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -309,129 +328,16 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
               marginBottom: 14,
             }}
           >
-            Your CV is
+            Your AI rewrite prompt is
             <br />
-            <span style={{ color: "#0E56FA" }}>recruiter-ready.</span>
+            <span style={{ color: "#0E56FA" }}>ready 🎯</span>
           </h1>
 
           <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.6 }}>
-            You've applied the XYZ formula across your CV sections. Time to take
-            the next step with your full application kit.
+            Your complete CV prompt package is ready — covering Summary, Experience, and Projects.
+            <br />Paste each part into ChatGPT, Claude, or Gemini to rewrite your full CV.
           </p>
         </motion.div>
-
-        {/* Bullet Preview Card */}
-        {bullet && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            style={{ width: "100%", marginBottom: 32 }}
-          >
-            <div
-              style={{
-                background: "white",
-                border: "1px solid #E2E8F0",
-                borderRadius: 16,
-                overflow: "hidden",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-              }}
-            >
-              <div
-                style={{
-                  height: 3,
-                  background: "linear-gradient(90deg, #020818 0%, #0E56FA 100%)",
-                }}
-              />
-              <div style={{ padding: "20px 24px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 7,
-                    marginBottom: 14,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 800,
-                      letterSpacing: "0.1em",
-                      color: "#94a3b8",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Your Optimized Bullet
-                  </span>
-                  <div style={{ flex: 1, height: 1, background: "#F1F5F9" }} />
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 10,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 14,
-                      color: "#0E56FA",
-                      fontWeight: 700,
-                      marginTop: 1,
-                      flexShrink: 0,
-                    }}
-                  >
-                    ▸
-                  </span>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      color: "#1e293b",
-                      lineHeight: 1.6,
-                      fontWeight: 500,
-                      letterSpacing: "-0.01em",
-                      margin: 0,
-                    }}
-                  >
-                    {bullet}
-                  </p>
-                </div>
-              </div>
-
-              {/* Copy button */}
-              <button
-                onClick={handleCopy}
-                style={{
-                  width: "100%",
-                  padding: "11px",
-                  borderTop: "1px solid #F1F5F9",
-                  background: copied ? "#F0FDF4" : "#FAFBFF",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: copied ? "#16a34a" : "#94a3b8",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 6,
-                  transition: "all 0.18s",
-                  borderRadius: "0 0 15px 15px",
-                }}
-              >
-                {copied ? (
-                  <>
-                    <Check size={12} strokeWidth={3} />
-                    Copied to clipboard!
-                  </>
-                ) : (
-                  "Click to copy bullet"
-                )}
-              </button>
-            </div>
-          </motion.div>
-        )}
 
         {/* Action Buttons */}
         <motion.div
@@ -466,12 +372,14 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
               transition: "all 0.18s",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#CBD5E1";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "#CBD5E1";
               (e.currentTarget as HTMLButtonElement).style.boxShadow =
                 "0 4px 12px rgba(0,0,0,0.08)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#E2E8F0";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "#E2E8F0";
               (e.currentTarget as HTMLButtonElement).style.boxShadow =
                 "0 1px 4px rgba(0,0,0,0.04)";
             }}
@@ -480,65 +388,121 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
             Download Full PJX CV Template &amp; Action Verb Checklist
           </button>
 
+          
           {/* Primary CTA */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
+            onClick={handleCopy}
             style={{
               width: "100%",
-              padding: "18px 24px",
-              borderRadius: 14,
-              background: "linear-gradient(135deg, #0E56FA 0%, #2563EB 100%)",
+              padding: "20px 32px",
+              borderRadius: 12,
+              background: copied ? "#22C55E" : "#0E56FA",
               color: "white",
-              fontSize: 16,
-              fontWeight: 800,
+              fontSize: 18,
+              fontWeight: 700,
               cursor: "pointer",
-              border: "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 10,
-              letterSpacing: "-0.03em",
-              boxShadow:
-                "0 8px 32px rgba(14,86,250,0.4), 0 2px 8px rgba(14,86,250,0.2)",
+              gap: 8,
+              border: "none",
+              boxShadow: "0 8px 24px rgba(14,86,250,0.25)",
+              transition: "all 0.2s ease-in-out",
+            }}
+            onMouseOver={(e) => {
+              if(!copied) Object.assign(e.currentTarget.style, { transform: 'translateY(-2px)', boxShadow: '0 12px 32px rgba(14,86,250,0.35)' });
+            }}
+            onMouseOut={(e) => {
+              if(!copied) Object.assign(e.currentTarget.style, { transform: 'translateY(0)', boxShadow: '0 8px 24px rgba(14,86,250,0.25)' });
             }}
           >
-            Apply for SFP Round 2
-            <ExternalLink size={16} strokeWidth={2.5} />
-          </motion.button>
+            {copied ? "Copied! ✓" : "Copy Your AI Rewrite Prompt ✨"}
+          </button>
+
+          <div
+            style={{
+              fontSize: 12,
+              color: "#6B7280",
+              textAlign: "center",
+              marginTop: 4,
+            }}
+          >
+            Works with ChatGPT, Claude, Gemini & more
+          </div>
+
         </motion.div>
 
-        {/* Restart */}
-        <motion.button
+        {/* Actions row: Back & Restart */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          onClick={onRestart}
           style={{
             marginTop: 24,
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            padding: "8px 14px",
-            borderRadius: 99,
-            border: "none",
-            background: "transparent",
-            color: "#94a3b8",
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: "pointer",
-            transition: "color 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#64748b";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+            gap: 24,
+            justifyContent: "center"
           }}
         >
-          <RotateCcw size={12} />
-          Start over
-        </motion.button>
+          {/* Back to edit */}
+          {onBack && (
+            <button
+              onClick={onBack}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 14px",
+                borderRadius: 99,
+                border: "none",
+                background: "transparent",
+                color: "#94a3b8",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "color 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#0E56FA";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+              }}
+            >
+              <ArrowLeft size={14} />
+              Back to edit
+            </button>
+          )}
+
+          {/* Start over */}
+          <button
+            onClick={onRestart}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "8px 14px",
+              borderRadius: 99,
+              border: "none",
+              background: "transparent",
+              color: "#94a3b8",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#ef4444";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+            }}
+          >
+            <RotateCcw size={14} />
+            Start over
+          </button>
+        </motion.div>
 
         {/* Footer */}
         <motion.div
@@ -556,8 +520,8 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
         >
           <p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6 }}>
             <strong style={{ color: "#020818" }}>Career Survival Kit</strong> ·
-            Built for university students and early-career professionals applying
-            for tech roles in 2026.
+            Built for university students and early-career professionals
+            applying for tech roles in 2026.
           </p>
         </motion.div>
       </div>

@@ -3,12 +3,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { Screen1Pillars } from "./components/Screen1Pillars";
 import { Screen3Workspace } from "./components/Screen3Workspace";
 import { Screen4Finish } from "./components/Screen4Finish";
+import { WelcomePage } from "./components/WelcomePage";
 import { MobileWorkspacePreview } from "./components/MobileWorkspacePreview";
 import { DiagnosticLevel } from "./types";
 import { trackEvent } from "../utils/analytics";
 
 export default function App() {
-  const [screen, setScreen] = useState<1 | 3 | 4>(1);
+  const [screen, setScreen] = useState<0 | 1 | 3 | 4>(0);
   const [selectedPillar, setSelectedPillar] = useState<string | null>("product");
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [workspaceLevel, setWorkspaceLevel] = useState<DiagnosticLevel>("developing");
@@ -109,6 +110,18 @@ export default function App() {
       )}
 
       <AnimatePresence mode="wait">
+        {screen === 0 && (
+          <motion.div
+            key="screen-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.28 }}
+          >
+            <WelcomePage onStart={() => setScreen(1)} />
+          </motion.div>
+        )}
+
         {screen === 1 && (
           <motion.div
             key="screen-1"
@@ -149,6 +162,7 @@ export default function App() {
               onSetLevel={setWorkspaceLevel}
               selectedRole={selectedRole}
               onComplete={handleBulletComplete}
+              onBack={() => setScreen(1)}
             />
           </motion.div>
         )}
@@ -161,7 +175,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
           >
-            <Screen4Finish bullet={builtBullet} onRestart={handleRestart} />
+            <Screen4Finish aiPrompt={builtBullet} bullet={builtBullet} onRestart={handleRestart} onBack={() => setScreen(3)} selectedRole={selectedRole} />
           </motion.div>
         )}
       </AnimatePresence>
