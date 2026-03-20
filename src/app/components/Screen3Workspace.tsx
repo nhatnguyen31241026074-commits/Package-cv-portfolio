@@ -1665,6 +1665,7 @@ function LeftCVColumn({
             boxShadow:
               "0 1px 3px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.07), 0 24px 56px rgba(0,0,0,0.07)",
             overflow: "hidden",
+            flexShrink: 0,
           }}
         >
           <div
