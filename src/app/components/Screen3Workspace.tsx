@@ -665,19 +665,19 @@ function SpotlightTour({
   const spots = [
     // Step 0: Left CV panel (below topnav)
     { x: 0, y: NAV_H, sw: HALF, sh: h - NAV_H },
-    // Step 1: Right panel, checklist area (above the AI prompt box)
+    // Step 1: Right panel — checklist area (sticky bar + checklist block, top ~62%)
     {
       x: HALF,
       y: NAV_H,
       sw: w - HALF,
-      sh: Math.round((h - NAV_H) * 0.60),
+      sh: Math.round((h - NAV_H) * 0.62),
     },
-    // Step 2: Right panel, AI prompt box (bottom 40% of right panel)
+    // Step 2: Right panel — AI prompt box (the visible card, from 62% down ~32%)
     {
       x: HALF,
-      y: NAV_H + Math.round((h - NAV_H) * 0.60),
+      y: NAV_H + Math.round((h - NAV_H) * 0.62),
       sw: w - HALF,
-      sh: Math.round((h - NAV_H) * 0.40),
+      sh: Math.round((h - NAV_H) * 0.32),
     },
   ];
 
@@ -687,7 +687,7 @@ function SpotlightTour({
     // Step 1: Spotlight on RIGHT top (checklist) → show tooltip card on the LEFT side
     { tx: 20, ty: Math.round(h * 0.28) },
     // Step 2: Spotlight on RIGHT bottom (AI prompt) → show tooltip card on the LEFT side
-    { tx: 20, ty: Math.round(h * 0.38) },
+    { tx: 20, ty: Math.round(h * 0.30) },
   ];
 
   const { x, y, sw, sh } = spots[step];
@@ -3275,7 +3275,7 @@ export function Screen3Workspace({
 
       {/* ── HR Quote Bubble (FIX 1-5) ── */}
       <AnimatePresence>
-        {bubbleVisible && (
+        {bubbleVisible && !["header", "awards", "activities"].includes(activeSection) && (
           <div ref={bubbleRef}>
             <HRQuoteBubble
               section={activeSection}
