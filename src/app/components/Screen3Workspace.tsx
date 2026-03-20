@@ -23,7 +23,9 @@ import {
   Building2,
 } from "lucide-react";
 import { DiagnosticLevel } from "../types";
-import { CV_TEMPLATES, TRANSFORM_TEMPLATES, CVData, ExperienceEntry, ProjectEntry } from "../../data/cvTemplates";
+import { CV_TEMPLATES, TRANSFORM_TEMPLATES, CVData, ExperienceEntry, ProjectEntry, AwardEntry, ActivityEntry, generateFallbackCV } from "../../data/cvTemplates";
+import { EXPANDED_CV_TEMPLATES } from "../../data/expandedCvData";
+import { buildCombinedPrompt } from "./Screen4Finish"; // Provide full prompt
 
 // [PROMPT WIRING - Step 3] Helper to get dynamic prompt
 const getPromptForSection = (role: string | null, section: string): string => {
@@ -39,7 +41,10 @@ const getPromptForSection = (role: string | null, section: string): string => {
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type CVSection = "header" | "summary" | "experience" | "projects";
+export type CVSection = "header" | "summary" | "experience" | "projects" | "skills" | "education" | "awards" | "activities";
+
+import { ProjectXLogo } from "./ProjectXLogo";
+
 type FlashColor = "blue" | "green";
 
 type TextSeg = {
@@ -65,22 +70,22 @@ export type PanelData = {
 
 const TOUR_CONTENT = [
   {
-    title: "📄 Tờ CV của bạn",
+    title: "📄 Your Sample CV",
     description:
-      "Bấm vào bất kỳ phần nào trên CV này để khám phá bí mật mà HR đang tìm kiếm.",
-    buttonText: "Tiếp theo →",
-  },
-  {
-    title: "⚡ Level Switcher",
-    description:
-      "Chuyển đổi Level tại đây để xem tiêu chuẩn của HR thay đổi như thế nào.",
-    buttonText: "Tiếp theo →",
+      "On the left is a real CV sample matched to your chosen role — with actual bullet points, metrics, and layout. Click any section (Summary, Experience, Projects) to explore it. Watch it highlight!",
+    buttonText: "Next →",
   },
   {
     title: "✅ Self-Audit Checklist",
     description:
-      "Tự kiểm tra CV của bạn và mở khóa your AI prompt đặc biệt khi hoàn thành đủ 3 mục.",
-    buttonText: "Got it! 🎉",
+      "When you click a section, 3 quality checkboxes appear on the right. Each one is a standard HR expects. Tick them after honestly checking your own CV against the sample.",
+    buttonText: "Next →",
+  },
+  {
+    title: "🔓 Unlock Your Master AI Prompt",
+    description:
+      "Complete all 9 checklist items (3 per section). Once you hit 9/9, a Master AI Prompt unlocks. Copy it, paste it with your CV into ChatGPT or Claude, and get professional rewrites instantly!",
+    buttonText: "Let's Start! 🎉",
   },
 ];
 
@@ -127,6 +132,10 @@ const SECTION_LABEL: Record<CVSection, string> = {
   summary: "Summary",
   experience: "Experience",
   projects: "Projects",
+  skills: "Skills",
+  education: "Education",
+  awards: "Honors & Awards",
+  activities: "Extracurriculars",
 };
 
 // The generic CV Data and Transform templates are now imported from cvTemplates.ts
@@ -284,6 +293,146 @@ const PANEL_DATA: Record<CVSection, Record<DiagnosticLevel, PanelData>> = {
       aiPrompt: `Act as an executive headhunter for senior Product leadership.\n\nCreate a header and subtitle for a Director/VP/Senior Lead CV.\n\nContext:\n- Current title: [Senior PM / Product Lead]\n- Scope indicator: [$18M ARR / Series C / 3 squads]\n- Industry: [B2B SaaS / Fintech / Enterprise]\n- Target: [Director of Product / Head of Product / VP Product]\n\nDeliverables:\n1. Main title (5–8 words, bold positioning)\n2. Subtitle (10–15 words, include scope/metric)\n3. LinkedIn headline (max 120 chars)\n4. One-line email signature tagline`,
     },
   },
+  skills: { // Added for new CVSection type
+    starter: {
+      hrQuote:
+        "For entry-level, I look for foundational skills and eagerness to learn. List relevant tools, languages, and any certifications. Don't just say 'proficient' — show me what you've built with them.",
+      hrName: "Sarah Thompson",
+      hrRole: "HR Lead",
+      hrCompany: "shopee",
+      hrAvatar: "woman",
+      aiTitle: "Need help listing your skills?",
+      aiSubtext:
+        "Use this prompt to generate a structured list of skills relevant to your target role.",
+      aiPrompt: `Act as an expert CV coach for entry-level tech candidates.\n\nGenerate a list of 5-7 key skills for a [TARGET ROLE] candidate.\n\nContext:\n- Target role: [e.g., Associate Product Manager]\n- Key projects/coursework: [e.g., built a mobile app, took data science course]\n- Tools/languages you know: [e.g., Python, SQL, Figma]\n\nRequirements:\n- Categorize skills (e.g., Technical, Product, Soft)\n- Include 1-2 examples of how you applied each skill if possible.\n- Focus on skills directly relevant to the target role.`,
+    },
+    developing: {
+      hrQuote:
+        "Mid-level skills should demonstrate depth and application. Instead of just listing 'SQL', tell me 'SQL for A/B testing and data analysis'. Show me how your skills drive product outcomes.",
+      hrName: "Marcus Lee",
+      hrRole: "Tech Lead",
+      hrCompany: "google",
+      hrAvatar: "man",
+      aiTitle: "Want to showcase your skills effectively?",
+      aiSubtext:
+        "Use this prompt to refine your skills section, highlighting practical application and impact.",
+      aiPrompt: `Act as an expert CV coach for mid-level Product Managers.\n\nRefine the following skills list to highlight practical application and impact for a [TARGET SENIORITY] role.\n\nContext:\n- Current skills: [e.g., SQL, Jira, Agile, User Research]\n- Target seniority: [e.g., Senior PM / Product Lead]\n- Key achievements: [e.g., improved feature adoption by 15% using A/B testing]\n\nRequirements:\n- For each skill, add a brief phrase demonstrating its application or impact.\n- Group related skills (e.g., Product Management Tools, Data Analysis).\n- Remove generic skills; focus on those that differentiate you.`,
+    },
+    ready: {
+      hrQuote:
+        "At senior level, skills are less about individual tools and more about strategic capabilities. 'Leadership', 'Cross-functional Alignment', 'Market Analysis' — these are the skills that matter. Frame them with business context.",
+      hrName: "David Kim",
+      hrRole: "VP Engineering",
+      hrCompany: "scaleup",
+      hrAvatar: "man",
+      aiTitle: "Elevate your skills to a strategic level?",
+      aiSubtext:
+        "Use this prompt to transform your skills section into a strategic capabilities overview for executive roles.",
+      aiPrompt: `Act as an executive headhunter for senior Product leadership.\n\nTransform the following skills into a strategic capabilities overview for a Director/VP-level CV.\n\nContext:\n- Current skills: [e.g., Product Strategy, Team Leadership, Go-to-Market, P&L Management]\n- Target role: [e.g., VP Product / Head of Product]\n- Key leadership experiences: [e.g., led a team of 10 PMs, launched 3 new product lines]\n\nRequirements:\n- Rephrase skills as strategic capabilities (e.g., 'Product Strategy' -> 'Architecting Product Vision & Strategy').\n- For each capability, provide a brief, high-level example of impact or scope.\n- Focus on leadership, business acumen, and organizational influence.`,
+    },
+  },
+  education: { // Added for new CVSection type
+    starter: {
+      hrQuote:
+        "For students, education is paramount. List your degree, university, graduation date, and any relevant coursework or honors. If your GPA is strong, include it!",
+      hrName: "Sarah Thompson",
+      hrRole: "HR Lead",
+      hrCompany: "shopee",
+      hrAvatar: "woman",
+      aiTitle: "Need to optimize your education section?",
+      aiSubtext:
+        "Use this prompt to ensure your academic achievements are presented clearly and effectively.",
+      aiPrompt: `Act as an expert CV coach for entry-level tech candidates.\n\nOptimize the following education details for a student CV.\n\nContext:\n- Degree: [e.g., Bachelor of Science in Computer Science]\n- University: [e.g., VinUniversity]\n- Graduation Date: [e.g., May 2025]\n- GPA: [e.g., 3.8/4.0]\n- Relevant Coursework: [e.g., Data Structures, Algorithms, Product Design]\n- Honors/Awards: [e.g., Dean's List, Scholarship Recipient]\n\nRequirements:\n- Present information concisely and clearly.\n- Highlight relevant coursework and academic achievements.\n- Include GPA if it's strong (3.5+).`,
+    },
+    developing: {
+      hrQuote:
+        "For mid-level, education is still important but less prominent than experience. Keep it concise: Degree, University, Year. Only add details if they directly support your career trajectory or specializations.",
+      hrName: "Marcus Lee",
+      hrRole: "Tech Lead",
+      hrCompany: "google",
+      hrAvatar: "man",
+      aiTitle: "How to best present your education?",
+      aiSubtext:
+        "Use this prompt to condense your education section for a mid-level CV, focusing on relevance.",
+      aiPrompt: `Act as an expert CV coach for mid-level Product Managers.\n\nCondense the following education details for a mid-level CV.\n\nContext:\n- Degree: [e.g., Master of Business Administration]\n- University: [e.g., National University of Singapore]\n- Graduation Date: [e.g., 2020]\n- Thesis/Specialization: [e.g., Product Innovation in Fintech]\n\nRequirements:\n- Keep it to 1-2 lines per degree.\n- Include degree, university, and graduation year.\n- Only add thesis or specialization if highly relevant to target roles.`,
+    },
+    ready: {
+      hrQuote:
+        "At senior level, education is a formality. List your highest degree and institution. Executive education or relevant certifications can be included if they bolster your leadership profile.",
+      hrName: "David Kim",
+      hrRole: "VP Engineering",
+      hrCompany: "scaleup",
+      hrAvatar: "man",
+      aiTitle: "Streamline your education for executive roles?",
+      aiSubtext:
+        "Use this prompt to create a minimalist yet impactful education entry for a senior-level CV.",
+      aiPrompt: `Act as an executive headhunter for senior Product leadership.\n\nStreamline the following education details for a Director/VP-level CV.\n\nContext:\n- Highest Degree: [e.g., PhD in AI Ethics]\n- Institution: [e.g., Stanford University]\n- Year: [e.g., 2015]\n- Executive Education: [e.g., Harvard Business School Executive Program]\n\nRequirements:\n- List only highest degree and institution.\n- Include relevant executive education or certifications that enhance leadership credibility.\n- Keep it extremely concise.`,
+    },
+  },
+  awards: {
+    starter: {
+      hrQuote: "At the starter level, relevant awards establish credibility and highlight excellence. Focus on scholarships, hackathons, or academic honors.",
+      hrName: "Sarah Thompson",
+      hrRole: "HR Lead",
+      hrCompany: "shopee",
+      hrAvatar: "woman",
+      aiTitle: "How to showcase your academic honors?",
+      aiSubtext: "Use this prompt to cleanly present your awards, focusing on context and selectivity.",
+      aiPrompt: "Act as a CV coach for an entry-level tech candidate.\n\nFormat the following award/honor to be clean and impactful:\n- Award Name: [e.g., First Place Hackathon]\n- Issuer: [e.g., Tech Startup Club]\n- Date: [e.g., 2023]\n- Context/Description (optional): [e.g., Out of 50 teams, built an AI tool in 48 hours]\n\nRequirements:\n- Emphasize the prestige or selectivity if notable.\n- Keep description under 1 short sentence.",
+    },
+    developing: {
+      hrQuote: "For mid-level, only include awards that are highly relevant to your career or showcase exceptional leadership/technical recognition.",
+      hrName: "Marcus Lee",
+      hrRole: "Tech Lead",
+      hrCompany: "google",
+      hrAvatar: "man",
+      aiTitle: "Which awards matter now?",
+      aiSubtext: "Use this prompt to curate and format professional awards that highlight your growing domain expertise.",
+      aiPrompt: "Act as an expert CV writer for mid-level tech professionals.\n\nCondense and impact-focus the following professional recognition:\n- Award Name: [e.g., Q3 Innovator Award]\n- Issuer: [e.g., Company Name]\n- Date: [e.g., 2022]\n- Description: [e.g., Recognized for migrating core services with zero downtime]\n\nRequirements:\n- Focus entirely on the professional outcome that earned the award.\n- Keep it highly concise (1 line max).",
+    },
+    ready: {
+      hrQuote: "At the senior level, awards should represent industry-wide recognition, major patents, or significant structural contributions. Omit standard internal awards.",
+      hrName: "David Kim",
+      hrRole: "VP Engineering",
+      hrCompany: "scaleup",
+      hrAvatar: "man",
+      aiTitle: "Highlighting industry recognition?",
+      aiSubtext: "Use this prompt to frame executive-level accolades or major industry patents.",
+      aiPrompt: "Act as an executive headhunter.\n\nRefine the following major accolade/patent for a Director-level CV:\n- Title: [e.g., Patent: Machine Learning method for X]\n- Issuer/Organization: [e.g., US Patent Office]\n- Year: [e.g., 2021]\n- Impact: [e.g., Deployed across enterprise serving 2M users]\n\nRequirements:\n- Make it sound executive and industry-leading.\n- Keep it to a single, powerful line.",
+    },
+  },
+  activities: {
+    starter: {
+      hrQuote: "Extracurriculars are vital for students. They show me you can collaborate, take initiative, and manage time. Leadership roles in clubs are a massive plus.",
+      hrName: "Sarah Thompson",
+      hrRole: "HR Lead",
+      hrCompany: "shopee",
+      hrAvatar: "woman",
+      aiTitle: "Maximizing club involvement?",
+      aiSubtext: "Use this prompt to turn club participation into a demonstration of soft skills and leadership.",
+      aiPrompt: "Act as an expert CV coach for entry-level tech candidates.\n\nReframe the following extracurricular activity into 1-2 professional bullet points:\n- Organization: [e.g., University Tech Club]\n- Role: [e.g., Event Coordinator]\n- Dates: [e.g., 2023-2024]\n- What you did: [e.g., Organized 3 workshops, managed social media, grew membership by 20%]\n\nRequirements:\n- Use strong action verbs.\n- Treat this like professional experience, focusing on numbers, leadership, and outcomes.",
+    },
+    developing: {
+      hrQuote: "If you include activities at the mid-level, they better be relevant community contributions. Think open-source maintainer, meetup organizer, or tech speaker.",
+      hrName: "Marcus Lee",
+      hrRole: "Tech Lead",
+      hrCompany: "google",
+      hrAvatar: "man",
+      aiTitle: "Curating your professional community work?",
+      aiSubtext: "Use this prompt to format relevant community leadership and open-source contributions.",
+      aiPrompt: "Act as an expert CV writer for mid-level professionals.\n\nFormat the following community involvement into a professional entry:\n- Organization/Project: [e.g., ReactJS Vietnam Group]\n- Role/Contribution: [e.g., Core Contributor / Speaker]\n- Dates: [e.g., 2022 - Present]\n- Impact: [e.g., Spoke at 2 meetups for 200+ devs]\n\nRequirements:\n- Emphasize knowledge sharing and community impact.\n- Keep it highly scannable.",
+    },
+    ready: {
+      hrQuote: "For senior leaders, activities usually mean board memberships, advisory roles, or high-profile industry speaking engagements. Everything else is noise.",
+      hrName: "David Kim",
+      hrRole: "VP Engineering",
+      hrCompany: "scaleup",
+      hrAvatar: "man",
+      aiTitle: "Structuring board and advisory roles?",
+      aiSubtext: "Use this prompt to present your executive-level community and advisory engagements.",
+      aiPrompt: "Act as an executive CV consultant.\n\nFrame the following advisory or board role for a senior leader's CV:\n- Entity: [e.g., Tech Startup Hub / Non-Profit]\n- Role: [e.g., Advisory Board Member]\n- Dates: [e.g., 2020 - Present]\n- Contribution: [e.g., Mentored 5 startup founders on product strategy]\n\nRequirements:\n- Highlight strategic guidance and mentorship.\n- Keep it sophisticated and concise.",
+    },
+  },
 };
 
 // ─── Transform Bullet Component ───────────────────────────────────────────────
@@ -297,19 +446,29 @@ function TransformBullet({
   stages: [Stage, Stage, Stage, Stage];
   stageIndex: number;
 }) {
-  const currentStage = stages[Math.min(stageIndex, 3)];
+  // CRITICAL CRASH FIX: Guard against malformed or missing stages data
+  const safeStages = Array.isArray(stages) && stages.length > 0 ? stages : [[{ id: "fallback", text: "Loading representation..." } as TextSeg]];
+  const safeIndex = Math.min(Math.max(0, stageIndex), safeStages.length - 1);
+  const currentStage = safeStages[safeIndex];
+  
   const isBad = stageIndex === 0;
-  const isFinal = stageIndex === 3;
+  const isFinal = stageIndex >= 3;
   const containerRef = useRef<HTMLSpanElement>(null);
   const prevIndexRef = useRef(stageIndex);
-  const prevIdsRef = useRef(new Set(currentStage.map((s) => s.id)));
+  
+  // Safe mapping to prevent "cannot read properties of undefined (reading map)"
+  const currentIds = Array.isArray(currentStage) ? currentStage.map((s) => s?.id || "") : [];
+  const prevIdsRef = useRef(new Set(currentIds));
 
   useEffect(() => {
     if (stageIndex === prevIndexRef.current) return;
-    const newIds = new Set(currentStage.map((s) => s.id));
+    if (!Array.isArray(currentStage)) return;
+    
+    const newIds = new Set(currentStage.map((s) => s?.id || ""));
     const addedIds = [...newIds].filter((id) => !prevIdsRef.current.has(id));
 
     if (containerRef.current && addedIds.length > 0) {
+
       // Small delay ensures DOM has updated
       requestAnimationFrame(() => {
         addedIds.forEach((id) => {
@@ -409,7 +568,7 @@ function TransformBullet({
               fontSize: isTitleStyle ? 13 : 11.5,
               fontWeight: isTitleStyle ? 700 : 400,
               lineHeight: 1.6,
-              color: isBad ? "#ef4444" : "#334155",
+              color: isBad ? "#ef4444" : "#01001F",
               letterSpacing: isTitleStyle ? "-0.02em" : "-0.01em",
               transition: "color 0.4s",
               display: "block",
@@ -422,7 +581,7 @@ function TransformBullet({
                   ? "#0E56FA"
                   : seg.flash === "green"
                     ? "#16a34a"
-                    : "#334155";
+                    : "#01001F";
               return (
                 <span
                   key={seg.id}
@@ -497,34 +656,43 @@ function SpotlightTour({
 
   const { w, h } = dims;
 
+  // NAV_H = 56px (TopNav height)
+  const NAV_H = 56;
+  const HALF = Math.floor(w / 2);
+
   const spots = [
-    // Step 0: Left CV panel
-    { x: 12, y: 68, sw: w * 0.5 - 24, sh: h - 80 },
-    // Step 1: Level Switcher in TopBar (center)
-    { x: w * 0.5 - 148, y: 8, sw: 296, sh: 42 },
-    // Step 2: Checklist area (right panel lower portion)
+    // Step 0: Left CV panel (below topnav)
+    { x: 0, y: NAV_H, sw: HALF, sh: h - NAV_H },
+    // Step 1: Right panel, checklist area (roughly top 55% of right panel)
     {
-      x: w * 0.5 + 10,
-      y: Math.round(h * 0.44),
-      sw: w * 0.5 - 24,
-      sh: Math.round(h * 0.46),
+      x: HALF,
+      y: NAV_H,
+      sw: w - HALF,
+      sh: Math.round((h - NAV_H) * 0.55),
+    },
+    // Step 2: Right panel, AI prompt box (bottom 45% of right panel)
+    {
+      x: HALF,
+      y: NAV_H + Math.round((h - NAV_H) * 0.55),
+      sw: w - HALF,
+      sh: Math.round((h - NAV_H) * 0.45),
     },
   ];
 
   const tooltips = [
-    // Step 0: tooltip on the right panel side
-    { tx: w * 0.5 + 24, ty: Math.round(h * 0.5) - 110 },
-    // Step 1: tooltip below the switcher
-    { tx: w * 0.5 - 155, ty: 60 },
-    // Step 2: tooltip above the checklist, left area
-    { tx: 20, ty: Math.round(h * 0.44) - 185 },
+    // Step 0: Spotlight on LEFT CV panel → show tooltip card in the RIGHT side
+    { tx: HALF + 24, ty: Math.round(h * 0.28) },
+    // Step 1: Spotlight on RIGHT top (checklist) → show tooltip card on the LEFT side
+    { tx: 20, ty: Math.round(h * 0.28) },
+    // Step 2: Spotlight on RIGHT bottom (AI prompt) → show tooltip card on the LEFT side
+    { tx: 20, ty: Math.round(h * 0.38) },
   ];
 
   const { x, y, sw, sh } = spots[step];
   const { tx, ty } = tooltips[step];
   const content = TOUR_CONTENT[step];
   const isLast = step === 2;
-  const DIM = "rgba(2,8,24,0.82)";
+  const DIM = "rgba(1,0,31,0.82)";
 
   return (
     <motion.div
@@ -616,7 +784,7 @@ function SpotlightTour({
           borderRadius: 16,
           background: "white",
           boxShadow:
-            "0 8px 52px rgba(2,8,24,0.4), 0 2px 10px rgba(2,8,24,0.12)",
+            "0 8px 52px rgba(1,0,31,0.4), 0 2px 10px rgba(1,0,31,0.12)",
           zIndex: 10000,
         }}
       >
@@ -637,7 +805,7 @@ function SpotlightTour({
                 width: i === step ? 22 : 6,
                 borderRadius: 99,
                 background:
-                  i < step ? "#16a34a" : i === step ? "#0E56FA" : "#E2E8F0",
+                  i < step ? "#16a34a" : i === step ? "#0E56FA" : "#17CAFA",
                 transition: "all 0.3s",
               }}
             />
@@ -659,7 +827,7 @@ function SpotlightTour({
           style={{
             fontSize: 14,
             fontWeight: 800,
-            color: "#020818",
+            color: "#01001F",
             letterSpacing: "-0.03em",
             margin: "0 0 7px",
           }}
@@ -669,7 +837,7 @@ function SpotlightTour({
         <p
           style={{
             fontSize: 12.5,
-            color: "#475569",
+            color: "#01001F",
             lineHeight: 1.63,
             margin: "0 0 16px",
             letterSpacing: "-0.01em",
@@ -739,7 +907,7 @@ function LevelSwitcher({
     <div
       style={{
         display: "flex",
-        background: "#F1F5F9",
+        background: "#FFFFFF",
         borderRadius: 10,
         padding: 3,
         gap: 2,
@@ -763,7 +931,7 @@ function LevelSwitcher({
               cursor: "pointer",
               background: "none",
               border: "none",
-              color: active ? "white" : "#64748b",
+              color: active ? "white" : "#01001F",
               zIndex: 1,
               outline: "none",
               letterSpacing: "-0.01em",
@@ -834,7 +1002,7 @@ function TopNav({
               height: 32,
               borderRadius: 8,
               background: "#F8FAFC",
-              border: "1px solid #E2E8F0",
+              border: "1px solid #17CAFA",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -844,7 +1012,7 @@ function TopNav({
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M9 2L4 7L9 12" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 2L4 7L9 12" stroke="#01001F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </motion.button>
         )}
@@ -853,33 +1021,24 @@ function TopNav({
             width: 28,
             height: 28,
             borderRadius: 8,
-            background: "#020818",
+            background: "#01001F",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            boxShadow: "0 2px 6px rgba(2,8,24,0.2)",
+            boxShadow: "0 2px 6px rgba(1,0,31,0.2)",
           }}
         >
-          <span
-            style={{
-              color: "white",
-              fontSize: 10,
-              fontWeight: 900,
-              letterSpacing: "-0.05em",
-            }}
-          >
-            SK
-          </span>
+          <ProjectXLogo size={14} color="#FFFFFF" />
         </div>
         <div
-          style={{ width: 1, height: 16, background: "#E2E8F0", flexShrink: 0 }}
+          style={{ width: 1, height: 16, background: "#17CAFA", flexShrink: 0 }}
         />
         <span
           style={{
             fontSize: 13,
             fontWeight: 600,
-            color: "#020818",
+            color: "#01001F",
             letterSpacing: "-0.02em",
           }}
         >
@@ -890,7 +1049,7 @@ function TopNav({
             style={{
               fontSize: 13,
               fontWeight: 500,
-              color: "#64748b",
+              color: "#01001F",
               letterSpacing: "-0.01em",
             }}
           >
@@ -1037,7 +1196,7 @@ function SectionDivider({ text, active }: { text: string; active?: boolean }) {
           height: 1,
           background: active
             ? "linear-gradient(90deg, #BFDBFE 0%, transparent 100%)"
-            : "#F1F5F9",
+            : "#FFFFFF",
           transition: "background 0.2s",
         }}
       />
@@ -1064,7 +1223,7 @@ function HRQuoteBubble({
   anchorRect: DOMRect | null;
   isMobile: boolean;
 }) {
-  const data = PANEL_DATA[section][level];
+  const data = PANEL_DATA[section] ? PANEL_DATA[section][level] : PANEL_DATA["experience"][level];
   const roleData = getRoleLevelData(selectedRole, level);
   const hrQuote =
     (roleData as any).hrQuotes?.[section] ||
@@ -1094,13 +1253,12 @@ function HRQuoteBubble({
       zIndex: 9999,
     };
   } else if (anchorRect) {
-    // FIX 1 — position: fixed, anchored to clicked element
+    // Position bubble to the right of the clicked CV section
     let top = anchorRect.top + window.scrollY;
-    // Right edge of CV left panel + GAP
     const cvPanelRightEdge = anchorRect.right;
     let left = cvPanelRightEdge + GAP;
 
-    // FIX 3 — Clamp: if bubble goes off the right edge, flip to left side of CV panel
+    // Clamp: if bubble goes off the right edge, flip to left side of CV panel
     if (left + BUBBLE_WIDTH > window.innerWidth - 8) {
       left = Math.max(8, anchorRect.left - BUBBLE_WIDTH - GAP);
     }
@@ -1117,7 +1275,6 @@ function HRQuoteBubble({
       left,
       width: BUBBLE_WIDTH,
       zIndex: 9999,
-      // FIX 4 — Smooth repositioning (no remount, just transition)
       transition: "top 200ms ease, left 200ms ease",
     };
   } else {
@@ -1246,7 +1403,7 @@ function HRQuoteBubble({
               </span>
             </div>
           </div>
-          <div style={{ fontSize: 11.5, color: "#64748b", fontWeight: 500 }}>
+          <div style={{ fontSize: 11.5, color: "#01001F", fontWeight: 500 }}>
             {hrRole}
           </div>
         </div>
@@ -1288,7 +1445,7 @@ function HRQuoteBubble({
         <p
           style={{
             fontSize: 13.5,
-            color: "#334155",
+            color: "#01001F",
             lineHeight: 1.6,
             margin: 0,
             fontStyle: "italic",
@@ -1302,20 +1459,42 @@ function HRQuoteBubble({
   );
 }
 
-// Maps a role string to a key inside CV_TEMPLATES / TRANSFORM_TEMPLATES.
-// Since templates are now keyed by exact role name, we try the direct key first,
-// then fall back to a sensible generic bucket.
+// Maps a role string to a key inside EXPANDED_CV_TEMPLATES.
+// Routes every role to the correct personalized CV bucket.
 export const getCVTemplateKey = (role: string | null): string => {
   const safeRole = role || "";
-  if (CV_TEMPLATES[safeRole]) return safeRole;
-  // Fallback: bucket by track type
+
+  // ── Explicit role-name mappings (Screen1Pillars roles) ──────────────────────
+  const ROLE_MAP: Record<string, string> = {
+    "Frontend Engineer":    "Software Engineering (SWE)",
+    "Backend Engineer":     "Software Engineering (SWE)",
+    "Full Stack Dev":       "Software Engineering (SWE)",
+    "Full-Stack Dev":       "Software Engineering (SWE)",
+    "Mobile Dev":           "Software Engineering (SWE)",
+    "DevOps":               "Cloud Engineering / DevOps",
+    "Product Management (PM)": "Product Management (PM)",
+    "Product Growth / Growth PM": "Product Growth / Growth PM",
+    "Business Analytics (BA)": "Business Analytics (BA)",
+    "UI/UX / Product Design": "UI/UX / Product Design",
+    "Sales Engineer":       "Business Development (Tech Industry)",
+    "Solutions Architect":  "Software Engineering (SWE)",
+    "Partnerships Lead":    "Business Development (Tech Industry)",
+    "Operations":           "Operations (Tech Operations / Process Automation)",
+    "AI/ML Engineer":       "Artificial Intelligence (AI) / Machine Learning (ML)",
+    "AI Product Manager":   "Artificial Intelligence (AI) / Machine Learning (ML)",
+    "Prompt Engineer":      "Artificial Intelligence (AI) / Machine Learning (ML)",
+    "Data Scientist":       "Data Analytics (DA) & Business Intelligence (BI)",
+  };
+  if (ROLE_MAP[safeRole]) return ROLE_MAP[safeRole];
+
+  // ── Generic fallback by keyword ──────────────────────────────────────────────
   if (safeRole.includes("AI") || safeRole.includes("Machine Learning") || safeRole.includes("Data Engineering"))
     return "Artificial Intelligence (AI) / Machine Learning (ML)";
   if (safeRole.includes("Data") || safeRole.includes("Analytics") || safeRole.includes("Business Intelligence"))
     return "Data Analytics (DA) & Business Intelligence (BI)";
   if (safeRole.includes("Cloud") || safeRole.includes("DevOps"))
     return "Cloud Engineering / DevOps";
-  if (safeRole.includes("Engineering") || safeRole.includes("SWE"))
+  if (safeRole.includes("Engineer") || safeRole.includes("SWE") || safeRole.includes("Developer") || safeRole.includes("Dev"))
     return "Software Engineering (SWE)";
   if (safeRole.includes("Growth"))
     return "Product Growth / Growth PM";
@@ -1355,7 +1534,10 @@ function LeftCVColumn({
   selectedRole: string | null;
 }) {
   const cvKey = getCVTemplateKey(selectedRole);
-  const cv: CVData = (CV_TEMPLATES[cvKey]?.[level]) ?? CV_TEMPLATES["Product Management (PM)"][level];
+  // EXPANDED_CV_TEMPLATES is keyed by exact role name - look it up directly first
+  const cv: CVData = (EXPANDED_CV_TEMPLATES[selectedRole || ""]?.[level])
+    ?? (EXPANDED_CV_TEMPLATES[cvKey]?.[level])
+    ?? generateFallbackCV(selectedRole || "Product Manager", level);
   const TRANSFORM = TRANSFORM_TEMPLATES[cvKey] ?? TRANSFORM_TEMPLATES["Product Management (PM)"];
   const roleData = getRoleLevelData(selectedRole, level);
   const stageIndex = checks.filter(Boolean).length;
@@ -1396,7 +1578,7 @@ function LeftCVColumn({
         <span
           key={i}
           style={{
-            color: isVerb ? "#0E56FA" : isMet ? "#16a34a" : "#334155",
+            color: isVerb ? "#0E56FA" : isMet ? "#16a34a" : "#01001F",
             fontWeight: isVerb || isMet ? 700 : 400,
           }}
         >
@@ -1409,7 +1591,7 @@ function LeftCVColumn({
     <>
       <style>{`
         .cv-left-scroll::-webkit-scrollbar { width: 6px; }
-        .cv-left-scroll::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 99px; margin: 8px 0; }
+        .cv-left-scroll::-webkit-scrollbar-track { background: #FFFFFF; border-radius: 99px; margin: 8px 0; }
         .cv-left-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
         .cv-left-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
@@ -1427,15 +1609,17 @@ function LeftCVColumn({
         .seg-flash-green { animation: segFlashGreen 1.3s ease forwards; }
       `}</style>
 
-      <div style={{ position: "relative", width: "50%", display: "flex", flexDirection: "column" }}>
+      <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div
         className="cv-left-scroll"
         style={{
           flex: 1,
+          minHeight: 0,
           width: "100%",
           overflowY: "auto",
-          background: "#F1F5F9",
-          borderRight: "1px solid #E2E8F0",
+          overflowX: "hidden",
+          background: "#FFFFFF",
+          borderRight: "1px solid #17CAFA",
           padding: "28px 24px 60px",
           display: "flex",
           flexDirection: "column",
@@ -1452,7 +1636,7 @@ function LeftCVColumn({
             padding: "5px 12px",
             borderRadius: 99,
             background: "white",
-            border: "1px solid #E2E8F0",
+            border: "1px solid #17CAFA",
             boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
           }}
         >
@@ -1465,7 +1649,7 @@ function LeftCVColumn({
               flexShrink: 0,
             }}
           />
-          <span style={{ fontSize: 11, fontWeight: 500, color: "#64748b" }}>
+          <span style={{ fontSize: 11, fontWeight: 500, color: "#01001F" }}>
             Click any section → check items on the right → watch it transform ✨
           </span>
         </div>
@@ -1476,7 +1660,7 @@ function LeftCVColumn({
             background: "white",
             width: "100%",
             maxWidth: 520,
-            border: "1px solid #E2E8F0",
+            border: "1px solid #17CAFA",
             borderRadius: 6,
             boxShadow:
               "0 1px 3px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.07), 0 24px 56px rgba(0,0,0,0.07)",
@@ -1486,7 +1670,7 @@ function LeftCVColumn({
           <div
             style={{
               height: 3,
-              background: "linear-gradient(90deg, #020818 0%, #0E56FA 100%)",
+              background: "linear-gradient(90deg, #01001F 0%, #0E56FA 100%)",
             }}
           />
           <div style={{ padding: "26px 32px 32px" }}>
@@ -1502,7 +1686,7 @@ function LeftCVColumn({
                 style={{
                   fontSize: 19,
                   fontWeight: 800,
-                  color: "#020818",
+                  color: "#01001F",
                   letterSpacing: "-0.04em",
                   marginBottom: 3,
                 }}
@@ -1513,7 +1697,7 @@ function LeftCVColumn({
                 style={{
                   fontSize: 12,
                   fontWeight: 500,
-                  color: "#64748b",
+                  color: "#01001F",
                   marginBottom: 8,
                   letterSpacing: "-0.01em",
                 }}
@@ -1531,14 +1715,14 @@ function LeftCVColumn({
                     style={{ display: "flex", alignItems: "center", gap: 4 }}
                   >
                     <Icon size={9} color="#94a3b8" strokeWidth={2} />
-                    <span style={{ fontSize: 10, color: "#64748b" }}>
+                    <span style={{ fontSize: 10, color: "#01001F" }}>
                       {text}
                     </span>
                   </div>
                 ))}
               </div>
               {/* Transform demo for header */}
-              {activeSection === "header" && (
+              {activeSection === "header" && TRANSFORM?.header?.[level]?.stages && (
                 <div style={{ marginTop: 10 }}>
                   <div
                     style={{
@@ -1573,7 +1757,7 @@ function LeftCVColumn({
                 text="Professional Summary"
                 active={activeSection === "summary"}
               />
-              {activeSection === "summary" && (
+              {activeSection === "summary" && TRANSFORM?.summary?.[level]?.stages && (
                 <div style={{ marginBottom: 8 }}>
                   <div
                     style={{
@@ -1616,7 +1800,7 @@ function LeftCVColumn({
                   transition={{ duration: 0.22 }}
                   style={{
                     fontSize: 11,
-                    color: "#334155",
+                    color: "#01001F",
                     lineHeight: 1.65,
                     margin: 0,
                     paddingLeft: 2,
@@ -1639,7 +1823,7 @@ function LeftCVColumn({
                 text="Experience"
                 active={activeSection === "experience"}
               />
-              {activeSection === "experience" && (
+              {activeSection === "experience" && TRANSFORM?.experience?.[level]?.stages && (
                 <div style={{ marginBottom: 10 }}>
                   <div
                     style={{
@@ -1687,7 +1871,7 @@ function LeftCVColumn({
                       style={{
                         marginBottom: idx < cv.experience.length - 1 ? 14 : 0,
                         paddingLeft: 10,
-                        borderLeft: "2px solid #E2E8F0",
+                        borderLeft: "2px solid #17CAFA",
                       }}
                     >
                       <div
@@ -1709,13 +1893,13 @@ function LeftCVColumn({
                             style={{
                               fontSize: 11.5,
                               fontWeight: 700,
-                              color: "#020818",
+                              color: "#01001F",
                               letterSpacing: "-0.02em",
                             }}
                           >
                             {entry.role}
                           </span>
-                          <span style={{ fontSize: 10, color: "#64748b" }}>
+                          <span style={{ fontSize: 10, color: "#01001F" }}>
                             · {entry.company}
                           </span>
                         </div>
@@ -1791,7 +1975,7 @@ function LeftCVColumn({
                 text="Projects"
                 active={activeSection === "projects"}
               />
-              {activeSection === "projects" && (
+              {activeSection === "projects" && TRANSFORM?.projects?.[level]?.stages && (
                 <div style={{ marginBottom: 10 }}>
                   <div
                     style={{
@@ -1838,7 +2022,7 @@ function LeftCVColumn({
                       key={idx}
                       style={{
                         paddingLeft: 10,
-                        borderLeft: "2px solid #E2E8F0",
+                        borderLeft: "2px solid #17CAFA",
                       }}
                     >
                       <div
@@ -1853,13 +2037,13 @@ function LeftCVColumn({
                           style={{
                             fontSize: 11.5,
                             fontWeight: 700,
-                            color: "#020818",
+                            color: "#01001F",
                             letterSpacing: "-0.02em",
                           }}
                         >
                           {proj.name}
                         </span>
-                        <span style={{ fontSize: 10, color: "#64748b" }}>
+                        <span style={{ fontSize: 10, color: "#01001F" }}>
                           · {proj.type}
                         </span>
                       </div>
@@ -1911,8 +2095,179 @@ function LeftCVColumn({
                 </motion.div>
               </AnimatePresence>
             </CVSectionBlock>
-          </div>
 
+            {/* ── AWARDS ── */}
+            {cv.awards && cv.awards.length > 0 && (
+              <CVSectionBlock
+                id="awards"
+                isActive={activeSection === "awards"}
+                isHovered={hoveredSection === "awards"}
+                onHover={onHover}
+                onClick={onActivate}
+              >
+                <SectionDivider
+                  text="Honors & Awards"
+                  active={activeSection === "awards"}
+                />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`awd-${level}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
+                  >
+                    {cv.awards.map((award: AwardEntry, idx: number) => (
+                      <div
+                        key={idx}
+                        style={{
+                          marginBottom: idx < cv.awards!.length - 1 ? 10 : 0,
+                          paddingLeft: 10,
+                          borderLeft: "2px solid #17CAFA",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "baseline",
+                            gap: 5,
+                            marginBottom: 2,
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 11.5,
+                              fontWeight: 700,
+                              color: "#01001F",
+                              letterSpacing: "-0.02em",
+                            }}
+                          >
+                            {award.name}
+                          </span>
+                          <span style={{ fontSize: 10, color: "#01001F" }}>
+                            · {award.issuer} ({award.date})
+                          </span>
+                        </div>
+                        {award.description && (
+                          <div
+                            style={{
+                              fontSize: 10.5,
+                              lineHeight: 1.55,
+                              letterSpacing: "-0.01em",
+                              color: "#01001F",
+                              marginTop: 2,
+                            }}
+                          >
+                            {renderHighlighted(award.description)}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </CVSectionBlock>
+            )}
+
+            {/* ── ACTIVITIES ── */}
+            {cv.activities && cv.activities.length > 0 && (
+              <CVSectionBlock
+                id="activities"
+                isActive={activeSection === "activities"}
+                isHovered={hoveredSection === "activities"}
+                onHover={onHover}
+                onClick={onActivate}
+              >
+                <SectionDivider
+                  text="Extracurriculars"
+                  active={activeSection === "activities"}
+                />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`act-${level}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
+                  >
+                    {cv.activities.map((act: ActivityEntry, idx: number) => (
+                      <div
+                        key={idx}
+                        style={{
+                          marginBottom: idx < cv.activities!.length - 1 ? 14 : 0,
+                          paddingLeft: 10,
+                          borderLeft: "2px solid #17CAFA",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "baseline",
+                            justifyContent: "space-between",
+                            marginBottom: 4,
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                            <span
+                              style={{
+                                fontSize: 11.5,
+                                fontWeight: 700,
+                                color: "#01001F",
+                                letterSpacing: "-0.02em",
+                              }}
+                            >
+                              {act.organisation}
+                            </span>
+                            <span style={{ fontSize: 11, fontWeight: 500, color: "#0E56FA" }}>
+                              {act.role}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: 9.5, fontWeight: 600, color: "#94a3b8" }}>
+                            {act.dates}
+                          </span>
+                        </div>
+                        {act.bullets && act.bullets.length > 0 && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                            {act.bullets.map((bullet: string, bi: number) => (
+                              <div
+                                key={bi}
+                                style={{
+                                  display: "flex",
+                                  gap: 5,
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    fontSize: 9.5,
+                                    color: activeSection === "activities" ? "#0E56FA" : "#CBD5E1",
+                                    fontWeight: 700,
+                                    marginTop: 1.5,
+                                    flexShrink: 0,
+                                    transition: "color 0.2s",
+                                  }}
+                                >
+                                  ▸
+                                </span>
+                                <div
+                                  style={{
+                                    fontSize: 10.5,
+                                    lineHeight: 1.55,
+                                    letterSpacing: "-0.01em",
+                                  }}
+                                >
+                                  {renderHighlighted(bullet)}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </CVSectionBlock>
+            )}
+          </div>
           {/* Legend */}
           <div
             style={{
@@ -1998,8 +2353,8 @@ function StepChecklist({
               gap: 10,
               padding: "10px 12px",
               borderRadius: 10,
-              border: `1.5px solid ${done ? "#BBF7D0" : enabled ? "#F1F5F9" : "#F8FAFC"}`,
-              background: done ? "#F0FDF4" : enabled ? "#FAFBFF" : "#FAFBFF",
+              border: `1.5px solid ${done ? "#BBF7D0" : enabled ? "#FFFFFF" : "#F8FAFC"}`,
+              background: done ? "#F0FDF4" : enabled ? "#FFFFFF" : "#FFFFFF",
               cursor: enabled ? "pointer" : "not-allowed",
               textAlign: "left",
               transition: "all 0.2s",
@@ -2023,7 +2378,7 @@ function StepChecklist({
                   width: 22,
                   height: 22,
                   borderRadius: 7,
-                  border: `2px solid ${done ? "#16a34a" : enabled ? "#CBD5E1" : "#E2E8F0"}`,
+                  border: `2px solid ${done ? "#16a34a" : enabled ? "#CBD5E1" : "#17CAFA"}`,
                   background: done ? "#16a34a" : "white",
                   display: "flex",
                   alignItems: "center",
@@ -2065,7 +2420,7 @@ function StepChecklist({
                   style={{
                     width: 2,
                     height: 8,
-                    background: done ? "#BBF7D0" : "#E2E8F0",
+                    background: done ? "#BBF7D0" : "#17CAFA",
                     borderRadius: 99,
                     transition: "background 0.3s",
                   }}
@@ -2077,7 +2432,7 @@ function StepChecklist({
               <span
                 style={{
                   fontSize: 12.5,
-                  color: done ? "#16a34a" : enabled ? "#334155" : "#94a3b8",
+                  color: done ? "#16a34a" : enabled ? "#01001F" : "#94a3b8",
                   fontWeight: done ? 600 : 400,
                   letterSpacing: "-0.01em",
                   lineHeight: 1.5,
@@ -2129,28 +2484,28 @@ function StepChecklist({
 function RightInsightPanel({
   section,
   level,
-  checks,
-  onChecksChange,
+  sectionChecks,
+  onSectionChecksChange,
   onContinue,
   selectedRole,
 }: {
   section: CVSection;
   level: DiagnosticLevel;
-  checks: [boolean, boolean, boolean];
-  onChecksChange: (c: [boolean, boolean, boolean]) => void;
+  sectionChecks: Record<string, boolean[]>;
+  onSectionChecksChange: (c: [boolean, boolean, boolean]) => void;
   onContinue: (prompt: string) => void;
   selectedRole: string | null;
 }) {
-  const data = PANEL_DATA[section][level];
+  const data = PANEL_DATA[section] ? PANEL_DATA[section][level] : PANEL_DATA["experience"][level];
   const roleData = getRoleLevelData(selectedRole, level);
   // Override HR data and checklist with role-specific content
   const hrQuote =
     (roleData as any).hrQuotes?.[section] ||
     (roleData as any).hrQuote ||
-    data.hrQuote;
-  const hrName = roleData.hrName;
-  const hrRole = roleData.hrRole;
-  const hrCompany = roleData.hrCompany;
+    data?.hrQuote || "Great job structuring this section. Keep it up.";
+  const hrName = roleData.hrName || data?.hrName || "Career Coach";
+  const hrRole = roleData.hrRole || data?.hrRole || "Reviewer";
+  const hrCompany = roleData.hrCompany || data?.hrCompany || "startup";
   const cvKey = getCVTemplateKey(selectedRole);
   const TRANSFORM = TRANSFORM_TEMPLATES[cvKey] ?? TRANSFORM_TEMPLATES["Product Management (PM)"];
   
@@ -2159,22 +2514,42 @@ function RightInsightPanel({
   const transformAtLevel =
     sectionTransform?.[level] ?? sectionTransform?.["starter"] ?? sectionTransform ?? null;
 
-  const checklistItems =
+  // Always guarantee a valid 3-tuple to prevent crashes when switching sections
+  const DEFAULT_CHECKLIST: [string, string, string] = [
+    "Review this section carefully",
+    "Check for clarity and specificity",
+    "Add quantifiable metrics where possible",
+  ];
+
+  const checklistItems: [string, string, string] =
     section === "experience"
-      ? roleData.experienceChecklist
+      ? (Array.isArray(roleData.experienceChecklist) && roleData.experienceChecklist.length === 3
+          ? roleData.experienceChecklist as [string, string, string]
+          : DEFAULT_CHECKLIST)
       : section === "summary"
-        ? roleData.summaryChecklist
-        : transformAtLevel?.checklistItems ?? [];
+        ? (Array.isArray(roleData.summaryChecklist) && roleData.summaryChecklist.length === 3
+            ? roleData.summaryChecklist as [string, string, string]
+            : DEFAULT_CHECKLIST)
+        : (Array.isArray(transformAtLevel?.checklistItems) && transformAtLevel!.checklistItems.length === 3
+            ? transformAtLevel!.checklistItems as [string, string, string]
+            : DEFAULT_CHECKLIST);
   const transform = transformAtLevel;
   const panelKey = `${section}-${level}-${cvKey}`;
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<"helpful" | "love" | null>(null);
+  
+  const checks = (sectionChecks[section] || [false, false, false]) as [boolean, boolean, boolean];
+  const totalChecked = 
+    (sectionChecks.summary?.filter(Boolean).length || 0) + 
+    (sectionChecks.experience?.filter(Boolean).length || 0) + 
+    (sectionChecks.projects?.filter(Boolean).length || 0);
+  
   const stageIndex = checks.filter(Boolean).length;
-  const allChecked = stageIndex === 3;
+  const allChecked = totalChecked === 9;
   const companyInfo = COMPANY_INFO[hrCompany];
 
-  // [PROMPT WIRING - Step 4] Get the dynamic prompt for current role and section
-  const currentPrompt = getPromptForSection(selectedRole, section);
+  // [PROMPT WIRING - Step 4] Get the dynamic master prompt when unlocked
+  const currentPrompt = allChecked ? buildCombinedPrompt(selectedRole ?? null) : getPromptForSection(selectedRole, section);
 
   const handleCopy = () => {
     // [PROMPT WIRING - Step 4] Copy the dynamic prompt
@@ -2197,7 +2572,7 @@ function RightInsightPanel({
       <style>{`
         .cv-right-scroll::-webkit-scrollbar { width: 6px; }
         .cv-right-scroll::-webkit-scrollbar-track { background: #F8FAFC; border-radius: 99px; margin: 8px 0; }
-        .cv-right-scroll::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 99px; }
+        .cv-right-scroll::-webkit-scrollbar-thumb { background: #17CAFA; border-radius: 99px; }
         .cv-right-scroll::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
       `}</style>
       <div
@@ -2213,6 +2588,72 @@ function RightInsightPanel({
           flexDirection: "column",
         }}
       >
+        {/* ── Persistent Global X/9 Progress Bar (ALWAYS VISIBLE) ── */}
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 20,
+            background: "white",
+            borderBottom: "1.5px solid rgba(14,86,250,0.08)",
+            padding: "10px 28px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          {/* Section dots */}
+          {["summary", "experience", "projects"].map((sec) => {
+            const secChecks = (sectionChecks[sec] || []) as boolean[];
+            const secDone = secChecks.filter(Boolean).length;
+            return (
+              <div key={sec} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 2,
+                      background: secChecks[i] ? "#0E56FA" : "rgba(14,86,250,0.12)",
+                      transition: "background 0.3s",
+                    }}
+                  />
+                ))}
+                <span style={{ fontSize: 9, fontWeight: 600, color: "#01001F", opacity: 0.5, textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: 2 }}>
+                  {sec === "summary" ? "SUM" : sec === "experience" ? "EXP" : "PROJ"}
+                </span>
+              </div>
+            );
+          })}
+          {/* Global counter */}
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+            {/* Progress bar */}
+            <div style={{ width: 80, height: 4, borderRadius: 99, background: "rgba(14,86,250,0.12)", overflow: "hidden" }}>
+              <div
+                style={{
+                  height: "100%",
+                  borderRadius: 99,
+                  width: `${(totalChecked / 9) * 100}%`,
+                  background: allChecked ? "#16a34a" : "#0E56FA",
+                  transition: "width 0.4s ease",
+                }}
+              />
+            </div>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 800,
+                color: allChecked ? "#16a34a" : "#0E56FA",
+                letterSpacing: "-0.02em",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {totalChecked}/9 {allChecked ? "✓ Unlocked!" : "completed"}
+            </span>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={panelKey}
@@ -2233,10 +2674,13 @@ function RightInsightPanel({
               style={{
                 fontSize: 20,
                 fontWeight: 800,
-                color: "#020818",
                 letterSpacing: "-0.04em",
                 margin: 0,
                 lineHeight: 1.2,
+                background: "linear-gradient(90deg, #01001F 0%, #0E56FA 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
               }}
             >
               Mastering {SECTION_LABEL[section]}
@@ -2270,7 +2714,7 @@ function RightInsightPanel({
                   style={{
                     fontSize: 13,
                     fontWeight: 700,
-                    color: "#020818",
+                    color: "#01001F",
                     letterSpacing: "-0.02em",
                   }}
                 >
@@ -2293,7 +2737,7 @@ function RightInsightPanel({
                           width: 7,
                           height: 7,
                           borderRadius: 2,
-                          background: checks[i] ? "#16a34a" : "#E2E8F0",
+                          background: checks[i] ? "#16a34a" : "#17CAFA",
                           transition: "background 0.3s",
                         }}
                       />
@@ -2313,7 +2757,7 @@ function RightInsightPanel({
               <p
                 style={{
                   fontSize: 11.5,
-                  color: "#64748b",
+                  color: "#01001F",
                   margin: "0 0 10px",
                   letterSpacing: "-0.01em",
                 }}
@@ -2321,12 +2765,9 @@ function RightInsightPanel({
                 Tick each step — watch the CV bullet transform on the left ←
               </p>
               <StepChecklist
-                items={
-                  (checklistItems as [string, string, string]) ||
-                  transform.checklistItems
-                }
+                items={checklistItems}
                 checks={checks}
-                onChange={onChecksChange}
+                onChange={onSectionChecksChange}
               />
 
               {/* All-done celebration */}
@@ -2371,6 +2812,7 @@ function RightInsightPanel({
                 padding: "18px 20px",
                 position: "relative",
                 overflow: "hidden",
+                minHeight: 200,
                 background: allChecked
                   ? "linear-gradient(135deg, rgba(14,86,250,0.03) 0%, rgba(109,40,217,0.04) 100%)"
                   : "linear-gradient(135deg, rgba(148,163,184,0.06) 0%, rgba(203,213,225,0.08) 100%)",
@@ -2416,7 +2858,7 @@ function RightInsightPanel({
                       width: 56,
                       height: 56,
                       borderRadius: "50%",
-                      background: "linear-gradient(135deg, #F1F5F9, #E2E8F0)",
+                      background: "linear-gradient(135deg, #FFFFFF, #17CAFA)",
                       marginBottom: 12,
                       boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                     }}
@@ -2427,7 +2869,7 @@ function RightInsightPanel({
                     style={{
                       fontSize: 14,
                       fontWeight: 800,
-                      color: "#020818",
+                      color: "#01001F",
                       letterSpacing: "-0.02em",
                       margin: "0 0 8px",
                     }}
@@ -2437,7 +2879,7 @@ function RightInsightPanel({
                   <p
                     style={{
                       fontSize: 12,
-                      color: "#64748b",
+                      color: "#01001F",
                       lineHeight: 1.6,
                       margin: "0 0 6px",
                       letterSpacing: "-0.01em",
@@ -2445,9 +2887,9 @@ function RightInsightPanel({
                   >
                     Complete{" "}
                     <strong style={{ color: "#0E56FA" }}>
-                      3/3 checklist items
+                      9/9 checklist items
                     </strong>{" "}
-                    above to unlock the your AI rewrite prompt.
+                    across all sections (Summary, Experience, Projects) to unlock your master AI prompt.
                   </p>
                   <div
                     style={{
@@ -2469,7 +2911,7 @@ function RightInsightPanel({
                         letterSpacing: "0.02em",
                       }}
                     >
-                      {stageIndex}/3 Completed
+                      {totalChecked}/9 Completed
                     </span>
                   </div>
                 </motion.div>
@@ -2521,11 +2963,11 @@ function RightInsightPanel({
                       style={{
                         fontSize: 14,
                         fontWeight: 800,
-                        color: "#020818",
+                        color: "#01001F",
                         letterSpacing: "-0.02em",
                       }}
                     >
-                      {data.aiTitle}
+                      Master AI Prompt Unlocked!
                     </span>
                     <span
                       style={{
@@ -2561,7 +3003,7 @@ function RightInsightPanel({
                         fontFamily: "'Fira Code', 'Menlo', monospace",
                         fontSize: 13,
                         lineHeight: 1.5,
-                        color: "#334155",
+                        color: "#01001F",
                       }}
                     >
                       {currentPrompt}
@@ -2626,7 +3068,7 @@ function RightInsightPanel({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 style={{
-                  borderTop: "1px solid #F1F5F9",
+                  borderTop: "1px solid #FFFFFF",
                   paddingTop: 18,
                   display: "flex",
                   justifyContent: "flex-end",
@@ -2642,7 +3084,7 @@ function RightInsightPanel({
                     gap: 7,
                     padding: "10px 20px",
                     borderRadius: 10,
-                    background: "linear-gradient(135deg, #0E56FA 0%, #3B82F6 100%)",
+                    background: "linear-gradient(135deg, #0E56FA 0%, #17CAFA 100%)",
                     border: "none",
                     color: "white",
                     fontSize: 13,
@@ -2683,11 +3125,11 @@ export function Screen3Workspace({
 }: Screen3Props) {
   const [activeSection, setActiveSection] = useState<CVSection>("experience");
   const [hoveredSection, setHoveredSection] = useState<CVSection | null>(null);
-  const [checks, setChecks] = useState<[boolean, boolean, boolean]>([
-    false,
-    false,
-    false,
-  ]);
+  const [sectionChecks, setSectionChecks] = useState<Record<string, boolean[]>>({
+    summary: [false, false, false],
+    experience: [false, false, false],
+    projects: [false, false, false],
+  });
 
   // ── HR Quote Bubble state (FIX 1, FIX 2) ───────────────────────────────────
   const [bubbleVisible, setBubbleVisible] = useState(true);
@@ -2720,12 +3162,9 @@ export function Screen3Workspace({
   const [tourStep, setTourStep] = useState<number | null>(null);
 
   useEffect(() => {
-    const seen = localStorage.getItem("cv_survival_tour_v1");
-    if (!seen) {
-      // Brief delay so the workspace has time to render
-      const t = setTimeout(() => setTourStep(0), 420);
-      return () => clearTimeout(t);
-    }
+    // ALWAYS show the guided tour on every page visit
+    const t = setTimeout(() => setTourStep(0), 420);
+    return () => clearTimeout(t);
   }, []);
 
   const handleTourNext = () => {
@@ -2750,21 +3189,29 @@ export function Screen3Workspace({
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleChecksChange = (newChecks: [boolean, boolean, boolean]) => {
+    const currentSectionChecks = sectionChecks[activeSection] || [false, false, false];
     for (let i = 0; i < 3; i++) {
-      if (newChecks[i] && !checks[i]) {
+      if (newChecks[i] && !currentSectionChecks[i]) {
         if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
         setMicroToast({ key: Date.now(), step: i });
         toastTimerRef.current = setTimeout(() => setMicroToast(null), 2600);
         break;
       }
     }
-    setChecks(newChecks);
+    setSectionChecks(prev => ({
+      ...prev,
+      [activeSection]: newChecks
+    }));
   };
 
-  // Reset checks whenever section or level changes
+  // Reset checks only when the diagnostic level changes (not when activeSection changes!)
   useEffect(() => {
-    setChecks([false, false, false]);
-  }, [activeSection, level]);
+    setSectionChecks({
+      summary: [false, false, false],
+      experience: [false, false, false],
+      projects: [false, false, false],
+    });
+  }, [level]);
 
   // FIX 1 — Activate section and capture clicked element's rect for bubble positioning
   const handleActivate = (id: CVSection, rect: DOMRect) => {
@@ -2783,7 +3230,7 @@ export function Screen3Workspace({
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "#FAFBFF",
+        background: "#FFFFFF",
         fontFamily:
           "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
         WebkitFontSmoothing: "antialiased",
@@ -2803,14 +3250,14 @@ export function Screen3Workspace({
           hoveredSection={hoveredSection}
           onHover={setHoveredSection}
           onActivate={handleActivate}
-          checks={checks}
+          checks={((sectionChecks as any)[activeSection] || [false, false, false]) as [boolean, boolean, boolean]}
           selectedRole={selectedRole}
         />
         <RightInsightPanel
           section={activeSection}
           level={level}
-          checks={checks}
-          onChecksChange={handleChecksChange}
+          sectionChecks={sectionChecks}
+          onSectionChecksChange={handleChecksChange}
           onContinue={handleContinue}
           selectedRole={selectedRole}
         />
