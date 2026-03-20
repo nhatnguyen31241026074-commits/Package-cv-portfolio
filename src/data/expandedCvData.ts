@@ -30,6 +30,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Implemented real-time menu updates using Firestore listeners"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best UI Project",
+                  "issuer": "HUST Tech Fair",
+                  "date": "2024",
+                  "description": "Awarded for the most polished and accessible campus webapp among 60 entries."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "HUST Web Dev Club",
+                  "role": "Frontend Lead",
+                  "dates": "Sep 2023–Present",
+                  "bullets": [
+                        "Ran bi-weekly React workshops for 40 members",
+                        "Mentored 5 juniors who shipped their first deployed projects"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -60,6 +79,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Reduced design-to-code inconsistencies by 80% at Tiki"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Employee of the Quarter",
+                  "issuer": "Tiki E-Commerce",
+                  "date": "Q3 2023",
+                  "description": "Recognized for LCP improvements that lifted conversion rate 8%."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "VietJS Community",
+                  "role": "Talk Speaker",
+                  "dates": "2023–Present",
+                  "bullets": [
+                        "Spoke at 2 meetups on React performance optimization to 150+ developers",
+                        "Co-organized monthly virtual sessions with 200+ RSVPs"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -90,6 +128,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Established contribution guidelines and automated visual regression testing"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Tech Excellence Award",
+                  "issuer": "VNG Corporation",
+                  "date": "2022",
+                  "description": "Recognized for leading the micro-frontend architecture serving 2M DAU."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "React Vietnam Open Source",
+                  "role": "Core Maintainer",
+                  "dates": "Jan 2021–Present",
+                  "bullets": [
+                        "Maintained libraries with 1.2k+ GitHub stars across 3 packages",
+                        "Reviewed 80+ community PRs and mentored 4 first-time OSS contributors"
+                  ]
+            }
       ]
     }
   },
@@ -122,6 +179,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Implemented Redis Pub/Sub for horizontal scalability across 2 server instances"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best Capstone Project",
+                  "issuer": "RMIT Vietnam",
+                  "date": "2024",
+                  "description": "Top-ranked backend capstone for real-time chat system handling 100 concurrent connections."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "RMIT Backend Dev Society",
+                  "role": "Treasurer & Technical Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Organized 4 API design hackathons attracting 80+ participants",
+                        "Led Node.js crash course onboarding 30 new members"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -161,6 +237,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Supports distributed deployments via Redis atomic operations"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Performance Optimization Award",
+                  "issuer": "MoMo FinTech",
+                  "date": "2023",
+                  "description": "Reduced p99 latency from 800ms to 95ms, recognized as the highest-impact technical win of the year."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Golang Vietnam Community",
+                  "role": "Technical Blogger",
+                  "dates": "2022–Present",
+                  "bullets": [
+                        "Published 8 articles on Go concurrency patterns reaching 5k+ monthly readers",
+                        "Organized 2 Go meetups with 100+ developers each in Ho Chi Minh City"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -191,6 +286,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Adopted by 20 services across 3 product lines"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Engineering Impact Award",
+                  "issuer": "Sea Group",
+                  "date": "2022",
+                  "description": "Led order management re-architecture; scaled throughput 5× to 200k orders/day."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "APAC Backend Engineering Forum",
+                  "role": "Advisory Member",
+                  "dates": "Jun 2021–Present",
+                  "bullets": [
+                        "Spoke at 2 annual conferences on distributed systems to 400+ attendees",
+                        "Mentored 8 engineers through structured 3-month backend mentorship programme"
+                  ]
+            }
       ]
     }
   },
@@ -223,6 +337,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Handled 50 concurrent orders with real-time kitchen display updates via WebSockets"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Startup Hackathon Runner-Up",
+                  "issuer": "Da Nang Tech Fest",
+                  "date": "2024",
+                  "description": "Built a restaurant POS prototype end-to-end in 36 hours; awarded among 45 competing teams."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Da Nang Developers Collective",
+                  "role": "Core Organizer",
+                  "dates": "Sep 2023–Present",
+                  "bullets": [
+                        "Organized monthly full-stack study sessions with 50+ participants",
+                        "Sourced speakers from Shopee and VNG for 3 panel discussions"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -253,6 +386,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Integrated with Zapier, Notion, and Slack via webhooks"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Open Source Spotlight",
+                  "issuer": "GitHub Vietnam",
+                  "date": "2023",
+                  "description": "Form Builder project featured for 300+ GitHub stars and community engagement."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Base.vn Tech Talks",
+                  "role": "Speaker & Organizer",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Hosted 3 internal knowledge-sharing sessions on full-stack architecture for 60+ engineers",
+                        "Mentored 2 junior engineers; both received promotions within 12 months"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -283,6 +435,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Automated release notes generation and deployment gates"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Cloud Cost Champion Award",
+                  "issuer": "KiotViet",
+                  "date": "2022",
+                  "description": "Recognized for reducing annual AWS spend by $45k through serverless migration strategy."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam Full-Stack Guild",
+                  "role": "Chapter Lead",
+                  "dates": "Mar 2020–Present",
+                  "bullets": [
+                        "Grew monthly meetup from 20 to 120+ active members over 3 years",
+                        "Facilitated 6 annual tech talks on scalable architecture and monorepo tooling"
+                  ]
+            }
       ]
     }
   },
@@ -315,6 +486,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Implemented push notifications via Expo Notifications API"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best Mobile App",
+                  "issuer": "HUST App Showcase",
+                  "date": "2024",
+                  "description": "Campus Event App earned the highest user-experience rating from a panel of 10 industry judges."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "HUST Mobile Dev Club",
+                  "role": "President",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Led 30-member club building 5 campus apps; 3 published to app stores",
+                        "Ran React Native bootcamp training 15 students from zero to deployment"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -345,6 +535,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "7 configurable animation presets used in production by 3 startups"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Mobile Innovation Award",
+                  "issuer": "VinID Super App",
+                  "date": "Q2 2023",
+                  "description": "Recognized for reducing cold start time from 2.8s to 1.5s and improving daily active sessions."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "React Native Vietnam",
+                  "role": "Core Contributor & Speaker",
+                  "dates": "2022–Present",
+                  "bullets": [
+                        "Spoke at 2 national mobile conferences on React Native performance to 300+ attendees",
+                        "Open-source library achieved 150 GitHub stars and 600 weekly downloads"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -375,6 +584,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Runtime serves 500k daily mini app sessions with <100ms initialisation"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Vietnam Mobile Leader of the Year",
+                  "issuer": "Tech In Asia Vietnam",
+                  "date": "2022",
+                  "description": "Selected among 200 nominees for scaling Zalo Stories feature to 2M MAU in 3 months."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Mobile Dev APAC Community",
+                  "role": "Advisory Contributor",
+                  "dates": "Jan 2020–Present",
+                  "bullets": [
+                        "Mentored 6 junior mobile engineers across 3 startups; 4 now in senior roles",
+                        "Published 2 conference papers on cross-platform mobile architecture at MobCon Asia"
+                  ]
+            }
       ]
     }
   },
@@ -407,6 +635,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Used in 2 startup projects to achieve production-ready infra in under 2 hours"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best IaC Project",
+                  "issuer": "Terraform Vietnam Challenge",
+                  "date": "2024",
+                  "description": "IaC Starter Kit recognized as the most practical open-source contribution among 40 submissions."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "CloudTech Student Club",
+                  "role": "Infrastructure Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Ran 4 Docker and Kubernetes workshops for 60+ IT students",
+                        "Set up a shared AWS Sandbox lab environment used by 20 club members"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -438,6 +685,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Containerised a multi-service application with Docker and migrated to AWS ECS, allowing the system to handle traffic spikes gracefully during peak usage"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Q4 Reliability Champion",
+                  "issuer": "Finmo FinTech",
+                  "date": "2023",
+                  "description": "Maintained 99.97% uptime across 3 production EKS clusters in a high-growth environment."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "DevOps Vietnam Community",
+                  "role": "Community Lead",
+                  "dates": "2022–Present",
+                  "bullets": [
+                        "Moderated a 1.2k-member Slack community for DevOps practitioners",
+                        "Organized 3 Kubernetes Day Vietnam workshops attended by 200+ engineers"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -468,6 +734,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Presented resiliency learnings at APAC DevOps Summit 2023 to 250 attendees"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "APAC DevOps Excellence Award",
+                  "issuer": "HashiConf APAC",
+                  "date": "2023",
+                  "description": "Recognized for chaos engineering programme uncovering 12 critical single-points-of-failure."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "APAC SRE Council",
+                  "role": "Advisory Board Member",
+                  "dates": "Jun 2021–Present",
+                  "bullets": [
+                        "Advise 5 regional engineering leaders on reliability and on-call strategy",
+                        "Keynote speaker at APAC DevOps Summit 2023 to 250 attendees on chaos engineering"
+                  ]
+            }
       ]
     }
   },
@@ -658,6 +943,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Built Tableau dashboards visualising projected LTV/CAC impact for 3 pricing scenarios"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best Growth Insight",
+                  "issuer": "University Marketing Competition",
+                  "date": "2024",
+                  "description": "Viral Loop Analysis model recognized for actionable K-factor insights among 80 competing student teams."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "University Growth Hacking Club",
+                  "role": "Research Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Led 20-member team running 5 simulated growth experiments per semester",
+                        "Presented growth findings to 3 faculty advisors; 2 insights incorporated into curriculum"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -689,6 +993,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Identified a critical Day-3 retention drop-off through cohort analysis and designed a push notification sequence that lifted D7 retention by 28% — turning an invisible churn point into the team's highest-impact fix"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Growth PM of the Quarter",
+                  "issuer": "FinTech App",
+                  "date": "Q1 2024",
+                  "description": "Recognized for lifting D1 retention from 32% to 39% and doubling viral coefficient to 1.4."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam Growth Collective",
+                  "role": "Core Organizer",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Organized 4 growth teardown sessions with 150+ practitioners per event",
+                        "Maintained a curated newsletter with 1.5k subscribers covering A/B testing and PLG trends"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -719,6 +1042,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Modelled 5 pricing scenarios in collaboration with Finance and Sales"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "PLG Innovator Award",
+                  "issuer": "SaaScribe Vietnam",
+                  "date": "2022",
+                  "description": "Recognized for leading PLG transition that captured $5M self-serve pipeline in 12 months."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Product-Led Growth Alliance APAC",
+                  "role": "Regional Ambassador",
+                  "dates": "Aug 2019–Present",
+                  "bullets": [
+                        "Represented Vietnam chapter at 2 global PLG summits with 500+ attendees each",
+                        "Mentored 4 Growth PMs who each secured roles at Series B+ funded companies"
+                  ]
+            }
       ]
     }
   },
@@ -751,6 +1093,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Competitor pricing heatmaps and market-share waterfall charts used as reference in board deck"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Top 3 – University Case Competition",
+                  "issuer": "FTU Consulting Club",
+                  "date": "2024",
+                  "description": "MarketLens financial model placed top 3 of 18 teams for analytical rigor and business recommendation quality."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "FTU Finance & Analytics Club",
+                  "role": "Research Analyst Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Produced monthly market reports distributed to 150 club members and 3 faculty advisors",
+                        "Mentored 8 junior analysts on SQL and Excel financial modeling"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -782,6 +1143,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Automated weekly competitor pricing tracking with Python across 8 websites, enabling the team to spot pricing shifts within days instead of the previous weeks-long manual cycle"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Business Impact Award",
+                  "issuer": "Retail Innovations VN",
+                  "date": "2023",
+                  "description": "Recognized for eliminating $50k/quarter in inventory write-offs through SQL reconciliation scripts."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam Business Analyst Network",
+                  "role": "Event Co-Organizer",
+                  "dates": "Jun 2022–Present",
+                  "bullets": [
+                        "Co-organized 5 BA community meetups with 200+ combined attendees",
+                        "Led 2 workshops on BPMN process mapping and stakeholder communication"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -812,6 +1192,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Zero compliance violations in first full operational year; system passed all 4 scheduled regulatory audits"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Digital Transformation Leader",
+                  "issuer": "Finance Technology Awards Vietnam",
+                  "date": "2022",
+                  "description": "Recognized for delivering a $3M core banking replacement on-time with zero compliance violations."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "ACCA Vietnam Chapter",
+                  "role": "Advisory Committee Member",
+                  "dates": "Feb 2018–Present",
+                  "bullets": [
+                        "Advised 8 early-career BAs on career paths in banking and enterprise technology",
+                        "Spoke at 2 ACCA annual conferences on BA practices in digital transformation"
+                  ]
+            }
       ]
     }
   },
@@ -844,6 +1243,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Full design documentation including personas, journey maps, and annotated developer specs"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "UX Design Award",
+                  "issuer": "Creative HCMC Competition",
+                  "date": "2024",
+                  "description": "NGO Donation Flow Redesign recognized for best WCAG compliance and user research methodology."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "HCMC Design Students Alliance",
+                  "role": "Portfolio Workshop Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Ran 3 Figma workshops for 50 design students from sketch to high-fidelity prototype",
+                        "Organized collaboration with 2 local NGOs providing real-world design briefs"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -875,6 +1293,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Validated the redesign through moderated usability testing with 30 participants, improving SUS score from 62 to 81 and giving the dev team confidence to proceed without further iteration"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best Product Design",
+                  "issuer": "Vietnam Digital Awards",
+                  "date": "2023",
+                  "description": "Analytics dashboard design recognized for 15% daily engagement lift and industry-leading usability score."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "UX Vietnam Community",
+                  "role": "Mentor & Speaker",
+                  "dates": "2022–Present",
+                  "bullets": [
+                        "Mentored 6 junior designers through monthly 1:1 portfolio critiques",
+                        "Spoke at UXVN Conf 2023 on user research methodology to 300+ attendees"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -905,6 +1342,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "4.8/5 from 10k reviews; 65% D30 retention at launch"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "App Store 'App of the Day'",
+                  "issuer": "Apple App Store",
+                  "date": "2022",
+                  "description": "Led design of consumer mobile app receiving App Store editorial feature and 4.8/5 from 10k reviews."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Design Leadership Vietnam",
+                  "role": "Board Member",
+                  "dates": "Aug 2019–Present",
+                  "bullets": [
+                        "Advised design teams at 3 early-stage startups on design system foundations and hiring",
+                        "Co-authored Vietnam's first UX career framework; shared with 2,000+ designers via LinkedIn"
+                  ]
+            }
       ]
     }
   },
@@ -937,6 +1393,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Modelled quota-attainment scenarios across 3 pricing strategies; presented to industry judge panel"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best B2B GTM Strategy",
+                  "issuer": "RMIT Business Case Finals",
+                  "date": "2024",
+                  "description": "12-month cybersecurity GTM plan awarded best overall strategy by an industry judge panel."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "RMIT Entrepreneurship Club",
+                  "role": "VP Sales & Partnerships",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Built 5 industry partnerships supporting $15k in university event funding",
+                        "Coached 8 startup teams on B2B sales pitch delivery and objection handling"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -967,6 +1442,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "New-hire ramp time dropped from 6 weeks to 4 weeks after rollout"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "President's Club – SDR",
+                  "issuer": "Cloud Infrastructure Co",
+                  "date": "2023",
+                  "description": "Achieved 120% of annual booked-meeting quota, generating $1.2M qualified pipeline."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam SaaS Sales Network",
+                  "role": "Community Builder",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Founded a 400+ member LinkedIn group for SDRs and AEs in Vietnamese tech",
+                        "Organized monthly cold-call critique sessions with guest speakers from top SaaS companies"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -997,6 +1491,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Mentored 3 junior AEs; each closed their first 6-figure deal within 6 months of coaching"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "President's Club",
+                  "issuer": "Data Security Corp",
+                  "date": "2023",
+                  "description": "Recognized for 3 consecutive years at 140%+ quota and closing $2.5M new ARR."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "APAC Enterprise Sales Forum",
+                  "role": "Advisory Speaker",
+                  "dates": "Mar 2018–Present",
+                  "bullets": [
+                        "Keynote speaker at 2 annual sales leadership summits on multi-stakeholder enterprise deal strategy",
+                        "Mentored 3 junior AEs to their first 6-figure closes within 6 months of coaching"
+                  ]
+            }
       ]
     }
   },
@@ -1029,6 +1542,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Achieved 99.9% simulated availability using Multi-AZ RDS and ALB"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "AWS Certified Cloud Practitioner",
+                  "issuer": "Amazon Web Services",
+                  "date": "2024",
+                  "description": "Achieved certification while completing TA responsibilities and a 3-tier AWS university project."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Cloud Students Vietnam",
+                  "role": "AWS Community Builder",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Ran 3 AWS free-tier hands-on labs for 45 IT students",
+                        "Organized a cloud study group preparing 12 students for AWS Cloud Practitioner certification"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1059,6 +1591,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Zero production downtime during 6-month migration; client achieved SOC 2 Type II certification post-migration"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "AWS Solutions Architect – Associate",
+                  "issuer": "Amazon Web Services",
+                  "date": "2023",
+                  "description": "Achieved professional certification while managing 5 active enterprise client architecture engagements."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "AWS User Group Vietnam",
+                  "role": "Core Organizer",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Organized 4 AWS community days with 300+ cumulative registrations",
+                        "Published 5 well-architected review guides downloaded 1,200+ times"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1089,6 +1640,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Platform used as Google Cloud APAC case study at Google Next 2024"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Google Cloud APAC Case Study",
+                  "issuer": "Google Cloud",
+                  "date": "2024",
+                  "description": "AI-Ready Data Platform featured at Google Next 2024 as the APAC gold standard architecture."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Google Cloud Champions Program",
+                  "role": "Regional Champion",
+                  "dates": "Jun 2019–Present",
+                  "bullets": [
+                        "Recognized as one of 20 APAC Regional Champions for cloud advocacy and customer success",
+                        "Mentored 3 junior architects now leading their own $1M+ cloud engagements"
+                  ]
+            }
       ]
     }
   },
@@ -1121,6 +1691,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Created the sponsor deck template still used by the student union"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best Partnerships Initiative",
+                  "issuer": "Vietnam National Tech Fair",
+                  "date": "2024",
+                  "description": "University Sponsorship Programme recognized for securing 5 corporate partners and $15k in event funding."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Student Entrepreneurship Network Vietnam",
+                  "role": "Partnerships Chair",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Secured 5 corporate sponsors generating $15k in annual event funding",
+                        "Facilitated 3 mentorship pairings between students and industry professionals"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1151,6 +1740,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Reduced integration support tickets by 60%"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Partnership Innovation Award",
+                  "issuer": "Fintech Vietnam Association",
+                  "date": "2023",
+                  "description": "Recognized for growing partnership-influenced revenue from $0 to $800k in 18 months."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam Fintech Alliance",
+                  "role": "Member & Working Group Lead",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Led a 15-member working group defining integration standards for payment API partnerships",
+                        "Represented organization at 2 ASEAN fintech forums connecting 300+ ecosystem players"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1181,6 +1789,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Playbook adopted as the company's go-to-market standard for new geographic expansions"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Top 40 Under 40 – Business Development",
+                  "issuer": "Việt Nam Business Review",
+                  "date": "2022",
+                  "description": "Recognized for growing partner network from 12 to 80 and driving 35% of total ARR via partner channel."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "APAC Partnerships Leaders Forum",
+                  "role": "Founding Member",
+                  "dates": "Mar 2019–Present",
+                  "bullets": [
+                        "Co-founded a 60-member CXO-level partnerships leadership community across 8 APAC markets",
+                        "Organized annual summit attracting 150 ecosystem leaders to discuss OEM and reseller strategy"
+                  ]
+            }
       ]
     }
   },
@@ -1213,6 +1840,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Identified optimal hub reducing simulated shipping costs by 12%"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Ops Excellence Award",
+                  "issuer": "FTU Student Operations Club",
+                  "date": "2024",
+                  "description": "Supply Chain Cost Simulation ranked top project in Operations Management for actionable cost insights."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "FTU Operations Management Club",
+                  "role": "Events Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Organized 4 industry speaker sessions on supply chain and process optimization",
+                        "Managed event logistics for the annual Student Business Summit with 300+ attendees"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1243,6 +1889,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Average incident resolution time dropped from 48 hours to 32 hours within 8 weeks of go-live"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Process Improvement Champion",
+                  "issuer": "RideHailing Startup",
+                  "date": "2023",
+                  "description": "Recognized for cutting driver onboarding SLA from 5 days to 2, eliminating 3 manual steps."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Lean Six Sigma Vietnam Chapter",
+                  "role": "Green Belt Member",
+                  "dates": "Jun 2022–Present",
+                  "bullets": [
+                        "Contributed to 3 Lean process improvement workshops attended by 120+ operations professionals",
+                        "Led a Green Belt study group preparing 8 colleagues for Lean Six Sigma certification"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1273,6 +1938,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Achieved operational readiness 3 weeks ahead of schedule across all 3 markets"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Ops Leader of the Year",
+                  "issuer": "FinTech Scaleup Excellence Awards",
+                  "date": "2022",
+                  "description": "Recognized for scaling operations from 5 to 60 headcount and cutting processing errors 40% via Lean Six Sigma."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam Operations Leaders Network",
+                  "role": "Advisory Board Member",
+                  "dates": "Feb 2019–Present",
+                  "bullets": [
+                        "Mentored 5 operations managers at Series A-B startups on building scalable ops functions",
+                        "Spoke at 2 operations excellence summits on ERP implementation and FinOps best practices"
+                  ]
+            }
       ]
     }
   },
@@ -1305,6 +1989,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Deployed on Hugging Face Spaces with 300+ interactions in first month"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Top 15% – Vietnamese NLP Leaderboard",
+                  "issuer": "AI Challenge Vietnam",
+                  "date": "2024",
+                  "description": "RAG chatbot ranked top 15% for answer accuracy among 200+ competing AI projects."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "HUST AI Research Society",
+                  "role": "Research Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Organized 6 paper-reading sessions on LLMs and retrieval-augmented generation for 40+ members",
+                        "Mentored 3 junior students through their first ML project submissions"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1335,6 +2038,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Reduced time-to-detect model degradation from 2 weeks to 24 hours"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "ML Engineering Excellence Award",
+                  "issuer": "Smart Retail Analytics",
+                  "date": "2023",
+                  "description": "Recognized for reducing inference latency 40% and building automated retraining pipeline maintaining 2% accuracy variance."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "MLOps Vietnam Community",
+                  "role": "Core Contributor",
+                  "dates": "2022–Present",
+                  "bullets": [
+                        "Published 4 articles on production ML and model monitoring reaching 3k+ monthly readers",
+                        "Organized 3 hands-on MLflow and FastAPI workshops for 80+ ML practitioners"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1365,6 +2087,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Whitepaper published internally; adopted as AI safety standard across 3 subsidiaries"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "AI Innovator of the Year",
+                  "issuer": "Vietnam AI Summit",
+                  "date": "2022",
+                  "description": "Recognized for architecting ML platform serving 15 models at >99.9% availability and cutting cloud costs 35%."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "AI Research Vietnam Guild",
+                  "role": "Advisory Researcher",
+                  "dates": "Mar 2019–Present",
+                  "bullets": [
+                        "Peer-reviewed 10+ research papers on NLP and Vietnamese-language AI submitted to EMNLP and ACL",
+                        "Mentored 4 researchers who published their work at tier-1 AI conferences"
+                  ]
+            }
       ]
     }
   },
@@ -1397,6 +2138,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Ranked 2nd of 24 teams; live demo adopted by the company Ops team"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "2nd Place – AI Hackathon",
+                  "issuer": "AI SaaS Startup Internal Hackathon",
+                  "date": "2024",
+                  "description": "Support Ticket Classifier ranked 2nd of 24 teams; live demo adopted by ops team for daily use."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "PM School Vietnam",
+                  "role": "AI Track Lead",
+                  "dates": "Sep 2023–Present",
+                  "bullets": [
+                        "Led curriculum design for an AI Product Management bootcamp with 30 participants",
+                        "Mentored 5 aspiring PMs on writing evals, PRDs, and AI product positioning"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1427,6 +2187,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Adopted by 3 product squads; cited in SOC 2 Type II documentation"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Product Innovation Award",
+                  "issuer": "B2B SaaS Co",
+                  "date": "2023",
+                  "description": "Recognized for launching AI writing assistant achieving 78% weekly active usage rate in Month 3."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "AI Product Managers Vietnam",
+                  "role": "Chapter Founder",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Founded community now with 500+ members; organized 5 events on AI product management",
+                        "Published a guide on responsible AI roadmapping downloaded 1,800+ times on Notion"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1457,6 +2236,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Zero critical AI-related customer escalations in 18 months post-implementation"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Top AI PM of the Year",
+                  "issuer": "SaaS Vietnam Excellence Awards",
+                  "date": "2022",
+                  "description": "Recognized for leading AI roadmap where AI features drove 40% of expansion revenue ($3M ARR)."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Global AI Product Leadership Forum",
+                  "role": "Advisory Member",
+                  "dates": "Apr 2019–Present",
+                  "bullets": [
+                        "Spoke at 2 global AI product conferences on responsible AI productisation to 600+ attendees",
+                        "Mentored 4 AI PMs; 2 now lead AI product functions at Series C+ companies"
+                  ]
+            }
       ]
     }
   },
@@ -1489,6 +2287,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Published evaluation rubrics for comparing prompt performance across LLM providers"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Best AI Tool",
+                  "issuer": "Vietnam Prompt Engineering Challenge",
+                  "date": "2024",
+                  "description": "Prompt Library recognised for quality and breadth of 80+ reusable templates with 200 GitHub stars."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "AI Builders Club Vietnam",
+                  "role": "Prompt Engineering Lead",
+                  "dates": "Sep 2023–Present",
+                  "bullets": [
+                        "Organized 4 practical workshops on prompt patterns and LLM evaluation for 60+ members",
+                        "Maintained a shared prompt library used as a learning resource by the entire club"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1519,6 +2336,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Findings used to select primary LLM saving $18k/year in API costs"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "AI Impact Award",
+                  "issuer": "AI Media Platform",
+                  "date": "2023",
+                  "description": "Recognized for improving AI content quality 35% and reducing hallucination rate from 15% to 4%."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "LangChain Vietnam User Group",
+                  "role": "Core Organizer",
+                  "dates": "Jan 2022–Present",
+                  "bullets": [
+                        "Organized 4 hands-on LangChain workshops with 120+ cumulative attendees",
+                        "Published 6 tutorials on RAG architecture and prompt versioning with 4k+ combined readers"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1549,6 +2385,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Deployed in production for 200 enterprise clients; average task completion rate 88%"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "AI Engineering Excellence Award",
+                  "issuer": "Enterprise AI Vietnam Summit",
+                  "date": "2022",
+                  "description": "Recognized for RAG system processing 1M documents/day at 95% accuracy and reducing LLM spend 45%."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "APAC Prompt & AI Systems Forum",
+                  "role": "Founding Member",
+                  "dates": "Mar 2019–Present",
+                  "bullets": [
+                        "Co-authored an industry white paper on enterprise RAG architecture downloaded 2,500+ times",
+                        "Advisor to 3 AI startups on prompt systems and LLM cost optimization strategy"
+                  ]
+            }
       ]
     }
   },
@@ -1581,6 +2436,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Translated top 5 churn predictors into business recommendations presented at a university competition"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Top 15% – Kaggle Competition",
+                  "issuer": "Kaggle",
+                  "date": "2024",
+                  "description": "Customer Churn Prediction model ranked top 15% globally; insights turned into 5 business recommendations presented to executives."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Statistics & Data Science Society",
+                  "role": "Analyst Lead",
+                  "dates": "Sep 2022–May 2024",
+                  "bullets": [
+                        "Published monthly data analysis reports on campus trends distributed to 200+ students",
+                        "Organized 3 Python and Tableau skill-building workshops for 60 attendees"
+                  ]
+            }
       ]
     },
     "developing": {
@@ -1611,6 +2485,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Increased experiment throughput from 2 to 6 tests per month"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Data Science Award",
+                  "issuer": "Tech Product Co",
+                  "date": "2023",
+                  "description": "Recognized for building A/B test framework lifting conversion 8% and improving blended ROAS 22%."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Vietnam Data Science Community",
+                  "role": "Content Lead",
+                  "dates": "2022–Present",
+                  "bullets": [
+                        "Published 5 tutorial articles on AB testing and attribution modeling reaching 6k+ monthly readers",
+                        "Organized a monthly 'Data Science Office Hours' session with 80+ members per event"
+                  ]
+            }
       ]
     },
     "ready": {
@@ -1641,6 +2534,25 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
             "Established data governance council enforcing strict schema contracts and PII handling standards"
           ]
         }
+      ],
+      "awards": [
+            {
+                  "name": "Data Leadership Award",
+                  "issuer": "Vietnam FinTech Awards",
+                  "date": "2022",
+                  "description": "Recognized for designing ML credit-scoring model reducing defaults 12% and saving $4M in risk exposure."
+            }
+      ],
+      "activities": [
+            {
+                  "organisation": "Data Science Vietnam – Advisory Board",
+                  "role": "Board Member",
+                  "dates": "Mar 2018–Present",
+                  "bullets": [
+                        "Advised on data literacy curriculum reaching 5,000+ data professionals through online courses",
+                        "Keynote speaker at Data Conference Vietnam 2023 on responsible ML in financial services"
+                  ]
+            }
       ]
     }
   }

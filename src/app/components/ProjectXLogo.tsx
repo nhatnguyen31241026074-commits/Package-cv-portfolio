@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Uses the actual ProjectX preview_icon.png from the public/ folder
+// Uses the actual ProjectX favicon.svg from the public/ folder
 export const ProjectXLogo = ({
   size = 24,
 }: {
@@ -8,7 +8,7 @@ export const ProjectXLogo = ({
   color?: string; // kept for API compat, ignored since we use the image
 }) => (
   <img
-    src="/preview_icon.png"
+    src="/favicon.svg"
     alt="ProjectX"
     width={size}
     height={size}

@@ -55,17 +55,7 @@ const PILLARS = [
     subtitle: "Shape the frontier",
     roles: ["AI/ML Engineer", "AI Product Manager", "Prompt Engineer", "Data Scientist"],
     accent: BLUE,
-  },
-  {
-    id: "other",
-    Icon: HelpCircle,
-    iconBg: "white",
-    iconColor: NAVY,
-    title: "Other",
-    subtitle: "Something else? We've got you",
-    roles: ["Other (Please Specify)"],
-    accent: NAVY,
-  },
+  }
 ];
 
 // ── Props ─────────────────────────────────────────────────────────
@@ -264,12 +254,8 @@ function StatusBar({ dark = false, step = 1, onBack }: { dark?: boolean; step?: 
         </button>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <div style={{
-            width: 26, height: 26, borderRadius: 6,
-            background: NAVY,
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <span style={{ fontSize: 9.5, fontWeight: 900, color: "white", letterSpacing: "-0.05em", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>PJX</span>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", border: "1px solid #E2E8F0" }}>
+            <img src="/favicon.svg" alt="Project X Logo" style={{ width: 22, height: 22, objectFit: "contain" }} />
           </div>
           <span style={{ fontSize: 13, fontWeight: 700, color: WHITE, letterSpacing: "-0.02em", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             Career Survival Kit
@@ -344,14 +330,15 @@ export function Screen1Pillars({
               width: 28,
               height: 28,
               borderRadius: 9,
-              background: "#01001F",
+              background: "#FFFFFF",
+              border: "1.5px solid #E2E8F0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 2px 6px rgba(1,0,31,0.15)",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.04)",
             }}
           >
-            <ProjectXLogo size={14} color="#FFFFFF" />
+            <img src="/favicon.svg" alt="Project X Logo" style={{ width: 18, height: 18, objectFit: "contain" }} />
           </div>
           <span
             style={{
@@ -552,7 +539,7 @@ export function Screen1Pillars({
               padding: "13px 26px",
               borderRadius: 12,
               background: canProceed ? "#0E56FA" : "#17CAFA",
-              color: canProceed ? "white" : "#94a3b8",
+              color: "white",
               fontSize: 14,
               fontWeight: 700,
               border: "none",

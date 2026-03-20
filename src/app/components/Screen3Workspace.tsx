@@ -107,12 +107,7 @@ const COMPANY_INFO: Record<
   string,
   { name: string; color: string; textColor: string }
 > = {
-  shopee: { name: "Shopee", color: "#EE4D2D", textColor: "white" },
-  google: { name: "Google", color: "#4285F4", textColor: "white" },
-  grab: { name: "Grab", color: "#00B14F", textColor: "white" },
-  vng: { name: "VNG", color: "#009FE8", textColor: "white" },
-  startup: { name: "Series B", color: "#6366f1", textColor: "white" },
-  scaleup: { name: "ScaleUp", color: "#8b5cf6", textColor: "white" },
+  expert: { name: "HR Expert", color: "#0f172a", textColor: "white" },
 };
 
 const LEVEL_OPTS: { id: DiagnosticLevel; emoji: string; label: string }[] = [
@@ -656,31 +651,51 @@ function SpotlightTour({
 
   const { w, h } = dims;
 
-  // NAV_H = 68px (TopNav height in Screen3)
-  const NAV_H = 68;
+  const [spots, setSpots] = useState(() => [
+    // Default fallbacks while DOM measures
+    { x: 0, y: 68, sw: Math.floor(dims.w / 2), sh: dims.h - 68 },
+    { x: Math.floor(dims.w / 2), y: 68, sw: dims.w - Math.floor(dims.w / 2), sh: Math.round((dims.h - 68) * 0.62) },
+    { x: Math.floor(dims.w / 2), y: 68 + Math.round((dims.h - 68) * 0.62), sw: dims.w - Math.floor(dims.w / 2), sh: Math.round((dims.h - 68) * 0.38) }
+  ]);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const half = Math.floor(w / 2);
+      const navH = 68;
+
+      const newSpots = [
+        { x: 0, y: navH, sw: half, sh: h - navH },
+        { x: half, y: navH, sw: w - half, sh: Math.round((h - navH) * 0.62) },
+        { x: half, y: navH + Math.round((h - navH) * 0.62), sw: w - half, sh: Math.round((h - navH) * 0.38) }
+      ];
+
+      const chk = document.getElementById("tour-checklist");
+      if (chk) {
+        const rect = chk.getBoundingClientRect();
+        newSpots[1] = { x: rect.left - 16, y: rect.top - 16, sw: rect.width + 32, sh: rect.height + 32 };
+      }
+
+      const prmpt = document.getElementById("tour-prompt");
+      if (prmpt) {
+        const rect = prmpt.getBoundingClientRect();
+        // The bottom card should be properly framed
+        newSpots[2] = { x: rect.left - 16, y: rect.top - 16, sw: rect.width + 32, sh: rect.height + 32 };
+      }
+
+      setSpots(newSpots);
+    };
+
+    update();
+    // Use a small timeout to let the entrance animations settle before measuring DOM
+    setTimeout(update, 350);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [step]);
+
+
   const HALF = Math.floor(w / 2);
-  // RIGHT_TOP = sticky progress bar height ~48px
-  const RIGHT_TOP = NAV_H + 48;
-
-  const spots = [
-    // Step 0: Left CV panel (below topnav)
-    { x: 0, y: NAV_H, sw: HALF, sh: h - NAV_H },
-    // Step 1: Right panel — checklist area (sticky bar + checklist block, top ~62%)
-    {
-      x: HALF,
-      y: NAV_H,
-      sw: w - HALF,
-      sh: Math.round((h - NAV_H) * 0.62),
-    },
-    // Step 2: Right panel — AI prompt box (the visible card, from 62% down ~32%)
-    {
-      x: HALF,
-      y: NAV_H + Math.round((h - NAV_H) * 0.62),
-      sw: w - HALF,
-      sh: Math.round((h - NAV_H) * 0.32),
-    },
-  ];
-
   const tooltips = [
     // Step 0: Spotlight on LEFT CV panel → show tooltip card in the RIGHT side
     { tx: HALF + 24, ty: Math.round(h * 0.28) },
@@ -689,6 +704,10 @@ function SpotlightTour({
     // Step 2: Spotlight on RIGHT bottom (AI prompt) → show tooltip card on the LEFT side
     { tx: 20, ty: Math.round(h * 0.30) },
   ];
+
+  if (step < 0 || step >= TOUR_CONTENT.length || !spots[step] || !tooltips[step]) {
+    return null;
+  }
 
   const { x, y, sw, sh } = spots[step];
   const { tx, ty } = tooltips[step];
@@ -867,7 +886,7 @@ function SpotlightTour({
               fontWeight: 500,
             }}
           >
-            Bỏ qua
+            Skip
           </button>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -1023,15 +1042,16 @@ function TopNav({
             width: 28,
             height: 28,
             borderRadius: 8,
-            background: "#01001F",
+            background: "#FFFFFF",
+            border: "1.5px solid #E2E8F0",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            boxShadow: "0 2px 6px rgba(1,0,31,0.2)",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.04)",
           }}
         >
-          <ProjectXLogo size={14} color="#FFFFFF" />
+          <img src="/favicon.svg" alt="Project X Logo" style={{ width: 18, height: 18, objectFit: "contain" }} />
         </div>
         <div
           style={{ width: 1, height: 16, background: "#17CAFA", flexShrink: 0 }}
@@ -1233,8 +1253,8 @@ function HRQuoteBubble({
     data.hrQuote;
   const hrName = roleData.hrName;
   const hrRole = roleData.hrRole;
-  const hrCompany = roleData.hrCompany;
-  const companyInfo = COMPANY_INFO[hrCompany];
+  const hrCompany = roleData?.hrCompany || "expert";
+  const companyInfo = COMPANY_INFO[hrCompany] || COMPANY_INFO.expert;
 
   // ── Position calculation (FIX 1 + FIX 3) ──────────────────────────────────
   const BUBBLE_WIDTH = 440;
@@ -1463,7 +1483,7 @@ function HRQuoteBubble({
 
 // Maps a role string to a key inside EXPANDED_CV_TEMPLATES.
 // Routes every role to the correct personalized CV bucket.
-export const getCVTemplateKey = (role: string | null): string => {
+const getCVTemplateKey = (role: string | null): string => {
   const safeRole = role || "";
 
   // ── Explicit role-name mappings (Screen1Pillars roles) ──────────────────────
@@ -1515,7 +1535,7 @@ export const getCVTemplateKey = (role: string | null): string => {
   return "Product Management (PM)";
 };
 // Keep old name as alias for any external consumers
-export const getTrackForRole = getCVTemplateKey;
+const getTrackForRole = getCVTemplateKey;
 
 function LeftCVColumn({
   level,
@@ -2356,8 +2376,8 @@ function StepChecklist({
               gap: 10,
               padding: "10px 12px",
               borderRadius: 10,
-              border: `1.5px solid ${done ? "#BBF7D0" : enabled ? "#FFFFFF" : "#F8FAFC"}`,
-              background: done ? "#F0FDF4" : enabled ? "#FFFFFF" : "#FFFFFF",
+              border: `1.5px solid ${done ? "#BBF7D0" : enabled ? "#E2E8F0" : "#F8FAFC"}`,
+              background: done ? "#F0FDF4" : enabled ? "#F8FAFF" : "#FFFFFF",
               cursor: enabled ? "pointer" : "not-allowed",
               textAlign: "left",
               transition: "all 0.2s",
@@ -2518,24 +2538,38 @@ function RightInsightPanel({
     sectionTransform?.[level] ?? sectionTransform?.["starter"] ?? sectionTransform ?? null;
 
   // Always guarantee a valid 3-tuple to prevent crashes when switching sections
-  const DEFAULT_CHECKLIST: [string, string, string] = [
-    "Review this section carefully",
-    "Check for clarity and specificity",
-    "Add quantifiable metrics where possible",
+  const DEFAULT_SUMMARY_CHECKLIST: [string, string, string] = [
+    "Keep it under 3 sentences",
+    "Highlight your most impressive metric or domain",
+    "Remove cliches like 'hard-working' or 'team player'",
   ];
+
+  const DEFAULT_PROJECTS_CHECKLIST: [string, string, string] = [
+    "State the problem your project solved",
+    "List the exact technical stack or tools used",
+    "Include a measurable outcome (users, speed, accuracy)",
+  ];
+
+  const DEFAULT_EXPERIENCE_CHECKLIST: [string, string, string] = [
+    "Open with an outcome-oriented action verb",
+    "Reference cross-functional scope or team size",
+    "Close with a commercial or engagement metric (%, $, users)",
+  ];
+
+  const FALLBACK_CHECKLIST = section === "summary" ? DEFAULT_SUMMARY_CHECKLIST : section === "projects" ? DEFAULT_PROJECTS_CHECKLIST : DEFAULT_EXPERIENCE_CHECKLIST;
 
   const checklistItems: [string, string, string] =
     section === "experience"
       ? (Array.isArray(roleData.experienceChecklist) && roleData.experienceChecklist.length === 3
           ? roleData.experienceChecklist as [string, string, string]
-          : DEFAULT_CHECKLIST)
+          : FALLBACK_CHECKLIST)
       : section === "summary"
         ? (Array.isArray(roleData.summaryChecklist) && roleData.summaryChecklist.length === 3
             ? roleData.summaryChecklist as [string, string, string]
-            : DEFAULT_CHECKLIST)
+            : FALLBACK_CHECKLIST)
         : (Array.isArray(transformAtLevel?.checklistItems) && transformAtLevel!.checklistItems.length === 3
             ? transformAtLevel!.checklistItems as [string, string, string]
-            : DEFAULT_CHECKLIST);
+            : FALLBACK_CHECKLIST);
   const transform = transformAtLevel;
   const panelKey = `${section}-${level}-${cvKey}`;
   const [copied, setCopied] = useState(false);
@@ -2690,7 +2724,17 @@ function RightInsightPanel({
             </h2>
 
             {/* ── Block 2: Step Checklist (only for core sections) ── */}
-            {["summary", "experience", "projects"].includes(section) ? (<div>
+            {["summary", "experience", "projects"].includes(section) ? (
+          <div
+            id="tour-checklist"
+            style={{
+              background: "rgba(14, 86, 250, 0.07)",
+              padding: "16px",
+              borderRadius: "16px",
+              border: "1px solid rgba(14, 86, 250, 0.15)",
+              marginBottom: "16px",
+            }}
+          >
               <div
                 style={{
                   display: "flex",
@@ -2817,6 +2861,7 @@ function RightInsightPanel({
 
             {/* ── Block 3: AI Prompt (Locked/Unlocked Progressive Disclosure) ── */}
             <div
+              id="tour-prompt"
               style={{
                 borderRadius: 14,
                 padding: "18px 20px",
