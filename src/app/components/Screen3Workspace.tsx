@@ -656,26 +656,28 @@ function SpotlightTour({
 
   const { w, h } = dims;
 
-  // NAV_H = 56px (TopNav height)
-  const NAV_H = 56;
+  // NAV_H = 68px (TopNav height in Screen3)
+  const NAV_H = 68;
   const HALF = Math.floor(w / 2);
+  // RIGHT_TOP = sticky progress bar height ~48px
+  const RIGHT_TOP = NAV_H + 48;
 
   const spots = [
     // Step 0: Left CV panel (below topnav)
     { x: 0, y: NAV_H, sw: HALF, sh: h - NAV_H },
-    // Step 1: Right panel, checklist area (roughly top 55% of right panel)
+    // Step 1: Right panel, checklist area (above the AI prompt box)
     {
       x: HALF,
       y: NAV_H,
       sw: w - HALF,
-      sh: Math.round((h - NAV_H) * 0.55),
+      sh: Math.round((h - NAV_H) * 0.60),
     },
-    // Step 2: Right panel, AI prompt box (bottom 45% of right panel)
+    // Step 2: Right panel, AI prompt box (bottom 40% of right panel)
     {
       x: HALF,
-      y: NAV_H + Math.round((h - NAV_H) * 0.55),
+      y: NAV_H + Math.round((h - NAV_H) * 0.60),
       sw: w - HALF,
-      sh: Math.round((h - NAV_H) * 0.45),
+      sh: Math.round((h - NAV_H) * 0.40),
     },
   ];
 
@@ -2687,8 +2689,8 @@ function RightInsightPanel({
               Mastering {SECTION_LABEL[section]}
             </h2>
 
-            {/* ── Block 2: Step Checklist ── */}
-            <div>
+            {/* ── Block 2: Step Checklist (only for core sections) ── */}
+            {["summary", "experience", "projects"].includes(section) ? (<div>
               <div
                 style={{
                   display: "flex",
@@ -2804,7 +2806,14 @@ function RightInsightPanel({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </div>) : (
+              /* Info panel for non-core sections (header, awards, activities) */
+              <div style={{ padding: "14px 18px", borderRadius: 12, background: "rgba(14,86,250,0.04)", border: "1px solid rgba(14,86,250,0.12)" }}>
+                <p style={{ fontSize: 12.5, color: "#01001F", lineHeight: 1.6, margin: 0 }}>
+                  💡 <strong>Tip:</strong> Use the AI prompt below to generate strong, role-specific content for this section. Paste it into ChatGPT or Claude with your CV details.
+                </p>
+              </div>
+            )}
 
             {/* ── Block 3: AI Prompt (Locked/Unlocked Progressive Disclosure) ── */}
             <div
