@@ -360,7 +360,8 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
           </h1>
 
           <p style={{ fontSize: 15, color: "#01001F", lineHeight: 1.6 }}>
-            You finished the section-by-section audit. This last step is different: one prompt for the{" "}
+            Congratulations - you finished the section-by-section audit. This last step is different: one
+            prompt for the{" "}
             <strong>whole CV</strong> — layout, flow, balance, and how scannable it is for your track.
           </p>
         </motion.div>
