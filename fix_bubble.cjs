@@ -1,0 +1,1 @@
+const fs = require("fs"); let f = "landing-page-repo/app/sfp2026/cv-builder/src/app/components/Screen3Workspace.tsx"; let t = fs.readFileSync(f, "utf8"); t = t.replace("{/* ?? HR Quote Bubble (Desktop overlay) ?? */}", "{/* ?? HR Quote Bubble (Disabled overlay) ?? */}"); t = t.replace("{!isMobile && (", "{false && ("); fs.writeFileSync(f, t);

@@ -127,22 +127,15 @@ export function PJXWorkspace({ trackId, onBack }: PJXWorkspaceProps) {
                 width: 32,
                 height: 32,
                 borderRadius: 8,
-                background: "#020818",
+                background: "#FFFFFF",
+                border: "1.5px solid #E2E8F0",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.04)",
               }}
             >
-              <span
-                style={{
-                  color: "white",
-                  fontSize: 12,
-                  fontWeight: 900,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                PJ
-              </span>
+              <img src="/favicon.svg" alt="Project X Logo" style={{ width: 22, height: 22, objectFit: "contain" }} />
             </div>
             <div>
               <div
@@ -1172,7 +1165,7 @@ export function PJXWorkspace({ trackId, onBack }: PJXWorkspaceProps) {
                       marginBottom: 20,
                     }}
                   >
-                    You've completed all 3 items! Here's your premium ChatGPT rewrite prompt.
+                    You've completed all 3 items! Here's your your AI rewrite prompt.
                   </p>
                   <motion.button
                     whileHover={{ scale: 1.03 }}

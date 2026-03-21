@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { ProjectXLogo } from "./ProjectXLogo";
 import { DiagnosticLevel } from "../types";
 
 // ── Data ──────────────────────────────────────────────────────────
@@ -122,22 +123,15 @@ export function Screen2Diagnostic({ checks, onToggle, onEnter, onBack }: Props) 
               width: 28,
               height: 28,
               borderRadius: 9,
-              background: "#020818",
+              background: "#FFFFFF",
+              border: "1.5px solid #E2E8F0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.04)",
             }}
           >
-            <span
-              style={{
-                color: "white",
-                fontSize: 11,
-                fontWeight: 900,
-                letterSpacing: "-0.05em",
-              }}
-            >
-              SK
-            </span>
+            <img src="/favicon.svg" alt="Project X Logo" style={{ width: 18, height: 18, objectFit: "contain" }} />
           </div>
           <span
             style={{

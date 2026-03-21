@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Download, ExternalLink, RotateCcw, Check } from "lucide-react";
+import { Copy, RotateCcw, Check, ArrowLeft } from "lucide-react";
+import { getCanonicalTrackKey } from "../../data/roleKeyMapping";
+import { buildPresentationMasterPrompt } from "../../data/presentationMasterPrompt";
 
 // ── Confetti Canvas ────────────────────────────────────────────────
 
@@ -19,14 +21,12 @@ interface Piece {
 }
 
 const CONFETTI_COLORS = [
-  "#0E56FA",
-  "#3B82F6",
-  "#22c55e",
-  "#f59e0b",
-  "#ec4899",
-  "#a855f7",
-  "#020818",
-  "#06b6d4",
+  "#0E56FA", // Crimson Red
+  "#17CAFA", // Lighter Red
+  "#01001F", // Navy
+  "#1A3FA8", // Lighter Blue
+  "#17CAFA", // Light Gray
+  "#FFFFFF", // Near white
 ];
 
 function ConfettiCanvas() {
@@ -63,7 +63,8 @@ function ConfettiCanvas() {
           vy: Math.sin(angle) * speed - 5,
           width: Math.random() * 14 + 6,
           height: Math.random() * 8 + 4,
-          color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+          color:
+            CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
           rotation: Math.random() * 360,
           rotationSpeed: (Math.random() - 0.5) * 10,
           opacity: 1,
@@ -141,27 +142,59 @@ function ConfettiCanvas() {
 // ── Props ─────────────────────────────────────────────────────────
 
 interface Props {
-  bullet: string;
+  aiPrompt?: string;
+  bullet?: string;
   onRestart: () => void;
+  onBack?: () => void;
+  selectedRole?: string | null;
+}
+
+export function buildCombinedPrompt(role: string | null): string {
+  const safeRole = role
+    ? getCanonicalTrackKey(role)
+    : "Product Management (PM)";
+  return `I want you to act like a strict but highly constructive HR/Recruitment Coordinator who has meticulously screened over 10,000 CVs in the tech industry. Your goal is to review my current CV draft and instantly point out missing information, weak verbs, or vague statements. Focus on making my CV sound “ready for impact” by tying my skills to quantifiable outcomes or clear value adds.
+
+Here is my target role: [ ${safeRole} ]
+
+Here is my current CV context:
+[ Insert your current CV details, bullets, and projects here ]
+
+Please do the following:
+1. Identify weak or passive verbs and rewrite them using strong, active language indicating ownership (e.g., spearheaded, architected, optimized).
+2. Highlight areas where metrics are missing and suggest specific types of metrics I should estimate or retrieve (%, $, hours, latency).
+3. Ensure absolute compliance with the Harvard CV format (no pronouns, clean structure, high scannability).
+4. Re-write my top 3 bullet points to follow the Golden Formula: 'Achieved [X] as measured by [Y] by doing [Z]'.
+
+Be brutal but highly actionable. Provide the fully re-written bullet points and summary at the end.`;
 }
 
 // ── Main Screen ───────────────────────────────────────────────────
 
-export function Screen4Finish({ bullet, onRestart }: Props) {
+export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
   const [copied, setCopied] = useState(false);
+  const canonicalRole = getCanonicalTrackKey(selectedRole ?? null);
+  const masterPrompt = useMemo(
+    () => buildPresentationMasterPrompt(canonicalRole),
+    [canonicalRole]
+  );
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(bullet).then(() => {
+  const handleCopyMaster = async () => {
+    try {
+      await navigator.clipboard.writeText(masterPrompt);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+      window.setTimeout(() => setCopied(false), 2200);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#FAFBFF",
+        background: "#FFFFFF",
+        fontFamily: "'Inter', sans-serif",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -197,7 +230,7 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
           position: "relative",
           zIndex: 1,
           width: "100%",
-          maxWidth: 560,
+          maxWidth: 640,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -229,7 +262,7 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
           <span
             style={{
               fontSize: 11,
-              color: "#0E56FA",
+              color: "#01001F",
               fontWeight: 700,
               marginLeft: 6,
               letterSpacing: "0.05em",
@@ -240,7 +273,7 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
           </span>
         </motion.div>
 
-        {/* Trophy icon */}
+        {/* Project X mark */}
         <motion.div
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -251,19 +284,30 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
             delay: 0.1,
           }}
           style={{
-            width: 88,
-            height: 88,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #0E56FA 0%, #3B82F6 100%)",
+            width: 222,
+            height: 104,
+            borderRadius: 20,
+            background: "#FFFFFF",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 8px 32px rgba(14,86,250,0.4)",
+            boxShadow: "0 8px 32px rgba(14,86,250,0.25)",
             marginBottom: 28,
-            fontSize: 40,
+            border: "1px solid rgba(14,86,250,0.15)",
+            padding: "10px 14px",
+            boxSizing: "border-box",
+            overflow: "hidden",
           }}
         >
-          🎯
+          <img
+            src="/preview_icon.png"
+            alt="Project X"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+            }}
+          />
         </motion.div>
 
         {/* Headline */}
@@ -280,160 +324,49 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
               gap: 6,
               padding: "5px 14px",
               borderRadius: 99,
-              background: "#F0FDF4",
-              border: "1px solid #BBF7D0",
+              background: "#FFFFFF",
+              border: "1px solid #17CAFA",
               marginBottom: 16,
             }}
           >
-            <Check size={12} color="#16a34a" strokeWidth={3} />
+            <Check size={12} color="#01001F" strokeWidth={3} />
             <span
               style={{
                 fontSize: 11,
                 fontWeight: 700,
-                color: "#16a34a",
+                color: "#01001F",
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
+                fontFamily: "'Outfit', sans-serif",
               }}
             >
-              CV Sections Optimized!
+              Toolkit Completed!
             </span>
           </div>
 
           <h1
             style={{
-              fontSize: "clamp(30px, 5vw, 48px)",
+              fontSize: "clamp(30px, 5vw, 42px)",
               fontWeight: 800,
-              color: "#020818",
+              color: "#01001F",
+              fontFamily: "'Outfit', sans-serif",
               letterSpacing: "-0.04em",
               lineHeight: 1.05,
               marginBottom: 14,
             }}
           >
-            Your CV is
-            <br />
-            <span style={{ color: "#0E56FA" }}>recruiter-ready.</span>
+            You are ready to build a<br />
+            <span style={{ color: "#0E56FA" }}>top-tier tech CV</span>
           </h1>
 
-          <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.6 }}>
-            You've applied the XYZ formula across your CV sections. Time to take
-            the next step with your full application kit.
+          <p style={{ fontSize: 15, color: "#01001F", lineHeight: 1.6 }}>
+            Congratulations - you finished the section-by-section audit. This last step is different: one
+            prompt for the{" "}
+            <strong>whole CV</strong> — layout, flow, balance, and how scannable it is for your track.
           </p>
         </motion.div>
 
-        {/* Bullet Preview Card */}
-        {bullet && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            style={{ width: "100%", marginBottom: 32 }}
-          >
-            <div
-              style={{
-                background: "white",
-                border: "1px solid #E2E8F0",
-                borderRadius: 16,
-                overflow: "hidden",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-              }}
-            >
-              <div
-                style={{
-                  height: 3,
-                  background: "linear-gradient(90deg, #020818 0%, #0E56FA 100%)",
-                }}
-              />
-              <div style={{ padding: "20px 24px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 7,
-                    marginBottom: 14,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 800,
-                      letterSpacing: "0.1em",
-                      color: "#94a3b8",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Your Optimized Bullet
-                  </span>
-                  <div style={{ flex: 1, height: 1, background: "#F1F5F9" }} />
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 10,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 14,
-                      color: "#0E56FA",
-                      fontWeight: 700,
-                      marginTop: 1,
-                      flexShrink: 0,
-                    }}
-                  >
-                    ▸
-                  </span>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      color: "#1e293b",
-                      lineHeight: 1.6,
-                      fontWeight: 500,
-                      letterSpacing: "-0.01em",
-                      margin: 0,
-                    }}
-                  >
-                    {bullet}
-                  </p>
-                </div>
-              </div>
-
-              {/* Copy button */}
-              <button
-                onClick={handleCopy}
-                style={{
-                  width: "100%",
-                  padding: "11px",
-                  borderTop: "1px solid #F1F5F9",
-                  background: copied ? "#F0FDF4" : "#FAFBFF",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: copied ? "#16a34a" : "#94a3b8",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 6,
-                  transition: "all 0.18s",
-                  borderRadius: "0 0 15px 15px",
-                }}
-              >
-                {copied ? (
-                  <>
-                    <Check size={12} strokeWidth={3} />
-                    Copied to clipboard!
-                  </>
-                ) : (
-                  "Click to copy bullet"
-                )}
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Action Buttons */}
+        {/* Holistic presentation prompt */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -442,103 +375,202 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: 12,
+            gap: 14,
           }}
         >
-          {/* Ghost button */}
-          <button
+          <div
             style={{
-              width: "100%",
-              padding: "14px 24px",
-              borderRadius: 14,
-              border: "1px solid #E2E8F0",
-              background: "white",
-              color: "#020818",
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 9,
-              letterSpacing: "-0.02em",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
-              transition: "all 0.18s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#CBD5E1";
-              (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                "0 4px 12px rgba(0,0,0,0.08)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#E2E8F0";
-              (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                "0 1px 4px rgba(0,0,0,0.04)";
+              padding: "14px 16px",
+              borderRadius: 12,
+              border: "1px solid rgba(14,86,250,0.2)",
+              background: "rgba(14,86,250,0.04)",
             }}
           >
-            <Download size={15} strokeWidth={2} />
-            Download Full PJX CV Template &amp; Action Verb Checklist
-          </button>
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.07em",
+                textTransform: "uppercase",
+                color: "#0E56FA",
+                marginBottom: 6,
+                fontFamily: "'Outfit', sans-serif",
+              }}
+            >
+              Whole-document prompt
+            </p>
+            <p style={{ fontSize: 13, color: "#01001F", lineHeight: 1.5, margin: 0 }}>
+              Tailored to <strong>{canonicalRole}</strong>. Use it as the main instruction in a fresh LLM
+              session, then add your <strong>complete CV text</strong> in the same conversation so the model can
+              judge structure and presentation — not just individual bullets.
+            </p>
+          </div>
 
-          {/* Primary CTA */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <textarea
+            readOnly
+            value={masterPrompt}
+            aria-label="Holistic CV presentation prompt"
             style={{
               width: "100%",
-              padding: "18px 24px",
-              borderRadius: 14,
-              background: "linear-gradient(135deg, #0E56FA 0%, #2563EB 100%)",
+              minHeight: 220,
+              padding: "14px 16px",
+              borderRadius: 12,
+              border: "1px solid #E2E8F0",
+              fontSize: 12,
+              lineHeight: 1.55,
+              fontFamily: "ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace",
+              color: "#0f172a",
+              resize: "vertical",
+              background: "#F8FAFC",
+              boxSizing: "border-box",
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={handleCopyMaster}
+            style={{
+              width: "100%",
+              padding: "18px 28px",
+              borderRadius: 12,
+              background: "#0E56FA",
               color: "white",
               fontSize: 16,
-              fontWeight: 800,
-              cursor: "pointer",
+              fontWeight: 700,
+              fontFamily: "'Outfit', sans-serif",
               border: "none",
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 10,
-              letterSpacing: "-0.03em",
-              boxShadow:
-                "0 8px 32px rgba(14,86,250,0.4), 0 2px 8px rgba(14,86,250,0.2)",
+              boxShadow: "0 8px 24px rgba(14,86,250,0.3)",
+              transition: "transform 0.2s ease, box-shadow 0.2s",
+            }}
+            onMouseOver={(e) => {
+              Object.assign(e.currentTarget.style, {
+                transform: "translateY(-2px)",
+                boxShadow: "0 12px 32px rgba(14,86,250,0.45)",
+              });
+            }}
+            onMouseOut={(e) => {
+              Object.assign(e.currentTarget.style, {
+                transform: "translateY(0)",
+                boxShadow: "0 8px 24px rgba(14,86,250,0.3)",
+              });
             }}
           >
-            Apply for SFP Round 2
-            <ExternalLink size={16} strokeWidth={2.5} />
-          </motion.button>
+            {copied ? (
+              <>
+                <Check size={18} strokeWidth={2.5} />
+                Copied
+              </>
+            ) : (
+              <>
+                <Copy size={18} strokeWidth={2.5} />
+                Copy whole-CV prompt
+              </>
+            )}
+          </button>
+
+          <div
+            style={{
+              padding: "16px 18px",
+              borderRadius: 12,
+              border: "1px solid #E2E8F0",
+              background: "#FFFFFF",
+            }}
+          >
+            <p
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#01001F",
+                marginBottom: 10,
+                fontFamily: "'Outfit', sans-serif",
+              }}
+            >
+              Why this step exists
+            </p>
+            <p style={{ fontSize: 13, color: "#334155", lineHeight: 1.55, margin: 0 }}>
+              The checklist improves each section’s content (bullets, metrics, and role wording). This step
+              refines the full CV view: section order, visual rhythm, consistency, and whether the document reads
+              like the track you chose.
+            </p>
+          </div>
         </motion.div>
 
-        {/* Restart */}
-        <motion.button
+        {/* Actions row: Back & Restart */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          onClick={onRestart}
           style={{
             marginTop: 24,
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            padding: "8px 14px",
-            borderRadius: 99,
-            border: "none",
-            background: "transparent",
-            color: "#94a3b8",
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: "pointer",
-            transition: "color 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#64748b";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+            gap: 24,
+            justifyContent: "center"
           }}
         >
-          <RotateCcw size={12} />
-          Start over
-        </motion.button>
+          {/* Back to edit */}
+          {onBack && (
+            <button
+              onClick={onBack}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 14px",
+                borderRadius: 99,
+                border: "none",
+                background: "transparent",
+                color: "#94a3b8",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "color 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#01001F";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+              }}
+            >
+              <ArrowLeft size={14} />
+              Back to edit
+            </button>
+          )}
+
+          {/* Start over */}
+          <button
+            onClick={onRestart}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "8px 14px",
+              borderRadius: 99,
+              border: "none",
+              background: "transparent",
+              color: "#94a3b8",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#ef4444";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+            }}
+          >
+            <RotateCcw size={14} />
+            Start over
+          </button>
+        </motion.div>
 
         {/* Footer */}
         <motion.div
@@ -549,15 +581,25 @@ export function Screen4Finish({ bullet, onRestart }: Props) {
             marginTop: 48,
             padding: "16px 24px",
             borderRadius: 14,
-            background: "rgba(14,86,250,0.04)",
-            border: "1px solid rgba(14,86,250,0.08)",
+            background: "white",
+            border: "1px solid #17CAFA",
             textAlign: "center",
+            boxShadow: "0 2px 8px rgba(1,0,31,0.03)",
           }}
         >
-          <p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6 }}>
-            <strong style={{ color: "#020818" }}>Career Survival Kit</strong> ·
-            Built for university students and early-career professionals applying
-            for tech roles in 2026.
+          <p
+            style={{
+              fontSize: 12,
+              color: "#01001F",
+              lineHeight: 1.6,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              margin: 0,
+            }}
+          >
+            <strong style={{ color: "#01001F", fontFamily: "'Outfit', sans-serif" }}>Career Survival Kit</strong> ·
+            Built for university students and early-career professionals applying for tech roles in 2026.
           </p>
         </motion.div>
       </div>
