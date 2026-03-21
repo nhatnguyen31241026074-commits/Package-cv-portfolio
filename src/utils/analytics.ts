@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { track } from '@vercel/analytics';
+import { capturePostHogEvent } from "./posthog";
 
 const isDev = import.meta.env.DEV;
 
@@ -7,6 +8,7 @@ const isDev = import.meta.env.DEV;
  * Custom tracking wrapper mapping to Vercel Analytics custom events
  */
 export const trackEvent = (eventName: string, properties?: Record<string, any>) => {
+  capturePostHogEvent(eventName, properties);
   if (isDev) {
     console.log(`[Analytics Event] ${eventName}`, properties);
   } else {

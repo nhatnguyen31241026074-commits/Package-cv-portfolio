@@ -36,6 +36,7 @@ Object.assign(EXPLICIT_UI_TO_CANONICAL, {
   Operations: "Operations (Tech Operations / Process Automation)",
   "AI/ML Engineer": "Artificial Intelligence (AI) / Machine Learning (ML)",
   "AI Product Manager": "Artificial Intelligence (AI) / Machine Learning (ML)",
+  "AI Product Management": "Artificial Intelligence (AI) / Machine Learning (ML)",
   "Prompt Engineer": "Artificial Intelligence (AI) / Machine Learning (ML)",
   "Data Scientist": "Data Analytics (DA) & Business Intelligence (BI)",
 });
@@ -127,6 +128,7 @@ const CANONICAL_TO_EXPANDED_LEGACY: Record<string, string> = {
  */
 export function getExpandedCvTemplateKey(role: string | null): string {
   const r = role || "";
+  if (r === "AI Product Management") return "AI Product Manager";
   if (EXPANDED_CV_LEGACY_KEYS.has(r)) return r;
   const canon = getCanonicalTrackKey(r);
   return CANONICAL_TO_EXPANDED_LEGACY[canon] ?? "Frontend Engineer";

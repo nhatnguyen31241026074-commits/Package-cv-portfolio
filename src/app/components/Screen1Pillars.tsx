@@ -69,7 +69,7 @@ const PILLARS = [
     iconColor: NAVY,
     title: "AI applications",
     subtitle: "Applied AI as product, workflow, or core lever",
-    roles: ["AI/ML Engineer", "AI Product Manager", "Prompt Engineer", "Data Scientist"],
+    roles: ["AI/ML Engineer", "AI Product Manager", "Prompt Engineer"],
     accent: BLUE,
   },
 ];

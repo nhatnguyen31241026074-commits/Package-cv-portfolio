@@ -284,27 +284,27 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
             delay: 0.1,
           }}
           style={{
-            width: 222,
-            height: 104,
-            borderRadius: 20,
-            background: "#FFFFFF",
+            width: 240,
+            height: 92,
+            borderRadius: 0,
+            background: "transparent",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 8px 32px rgba(14,86,250,0.25)",
+            boxShadow: "none",
             marginBottom: 28,
-            border: "1px solid rgba(14,86,250,0.15)",
-            padding: "10px 14px",
+            border: "none",
+            padding: 0,
             boxSizing: "border-box",
             overflow: "hidden",
           }}
         >
           <img
-            src="/preview_icon.png"
+            src="/favicon.svg"
             alt="Project X"
             style={{
-              width: "100%",
-              height: "100%",
+              width: 220,
+              height: 80,
               objectFit: "contain",
             }}
           />
@@ -340,7 +340,7 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
                 fontFamily: "'Outfit', sans-serif",
               }}
             >
-              Toolkit Completed!
+              Congratulation!
             </span>
           </div>
 
@@ -388,16 +388,17 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
           >
             <p
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.07em",
-                textTransform: "uppercase",
+                fontSize: 14,
+                fontWeight: 800,
+                letterSpacing: "-0.01em",
                 color: "#0E56FA",
-                marginBottom: 6,
+                marginBottom: 8,
                 fontFamily: "'Outfit', sans-serif",
+                textAlign: "center",
+                textShadow: "0 2px 12px rgba(14,86,250,0.18)",
               }}
             >
-              Whole-document prompt
+              Ready to make your very best CV?
             </p>
             <p style={{ fontSize: 13, color: "#01001F", lineHeight: 1.5, margin: 0 }}>
               Tailored to <strong>{canonicalRole}</strong>. Use it as the main instruction in a fresh LLM
@@ -473,31 +474,7 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
             )}
           </button>
 
-          <div
-            style={{
-              padding: "16px 18px",
-              borderRadius: 12,
-              border: "1px solid #E2E8F0",
-              background: "#FFFFFF",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: "#01001F",
-                marginBottom: 10,
-                fontFamily: "'Outfit', sans-serif",
-              }}
-            >
-              Why this step exists
-            </p>
-            <p style={{ fontSize: 13, color: "#334155", lineHeight: 1.55, margin: 0 }}>
-              The checklist improves each section’s content (bullets, metrics, and role wording). This step
-              refines the full CV view: section order, visual rhythm, consistency, and whether the document reads
-              like the track you chose.
-            </p>
-          </div>
+          {/* Why-this-step note intentionally merged into the intro card above */}
         </motion.div>
 
         {/* Actions row: Back & Restart */}

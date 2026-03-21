@@ -795,20 +795,20 @@ export const ROLE_DATA: Record<string, RoleData> = {
         "SQL/Analytics",
         "Stakeholder Management"
       ],
-      "hrQuote": "For APM interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
+      "hrQuote": "For product manager interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
       "hrName": "Marcus Lee",
       "hrRole": "Head of Product",
       "hrCompany": "google",
       "hrQuotes": {
-        "experience": "For APM interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
+        "experience": "For product manager interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
         "summary": "Product is about solving problems. Use your summary to show you have a product mindset. Who are you building for and why do you care?",
         "projects": "Even side projects count heavily. Did you build a Shopify store? Did you launch a campus newsletter? Show me you can hustle from zero to one.",
         "header": "Your header is the single most important 5 seconds of the CV. Keep it minimalist: Name, Role, Location, Top 2 Links."
       }
     },
     "developing": {
-      "cvTitle": "APM / Product Management Fresher",
-      "cvSummary": "APM / product fresher: internship owning a narrow onboarding experiment — wrote concise specs, tracked funnel metrics, and coordinated with design + eng in weekly rituals.",
+      "cvTitle": "Product Manager Fresher",
+      "cvSummary": "Product manager fresher: internship owning a narrow onboarding experiment — wrote concise specs, tracked funnel metrics, and coordinated with design + eng in weekly rituals.",
       "experienceChecklist": [
         "Prove business impact: 'Supported feature X launch, driving positive user feedback'",
         "Show cross-functional leadership: 'Aligned 3 engineers and 1 designer'",
@@ -940,12 +940,12 @@ export const ROLE_DATA: Record<string, RoleData> = {
         "SQL",
         "Funnel Analytics"
       ],
-      "hrQuote": "For APM interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
+      "hrQuote": "For product manager interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
       "hrName": "Marcus Lee",
       "hrRole": "Head of Product",
       "hrCompany": "google",
       "hrQuotes": {
-        "experience": "For APM interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
+        "experience": "For product manager interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
         "summary": "Product is about solving problems. Use your summary to show you have a product mindset. Who are you building for and why do you care?",
         "projects": "Even side projects count heavily. Did you build a Shopify store? Did you launch a campus newsletter? Show me you can hustle from zero to one.",
         "header": "Your header is the single most important 5 seconds of the CV. Keep it minimalist: Name, Role, Location, Top 2 Links."
@@ -1230,12 +1230,12 @@ export const ROLE_DATA: Record<string, RoleData> = {
         "Usability Testing",
         "HTML/CSS"
       ],
-      "hrQuote": "For APM interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
+      "hrQuote": "For product manager interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
       "hrName": "Marcus Lee",
       "hrRole": "Head of Product",
       "hrCompany": "google",
       "hrQuotes": {
-        "experience": "For APM interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
+        "experience": "For product manager interns, your bullet points must prove you can herd cats. Show me you identified a real problem, aligned a team without authority, and shipped something tangible.",
         "summary": "Product is about solving problems. Use your summary to show you have a product mindset. Who are you building for and why do you care?",
         "projects": "Even side projects count heavily. Did you build a Shopify store? Did you launch a campus newsletter? Show me you can hustle from zero to one.",
         "header": "Your header is the single most important 5 seconds of the CV. Keep it minimalist: Name, Role, Location, Top 2 Links."
