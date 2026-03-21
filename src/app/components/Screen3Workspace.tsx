@@ -33,6 +33,7 @@ import { CV_TEMPLATES, TRANSFORM_TEMPLATES, CVData, ExperienceEntry, ProjectEntr
 import { EXPANDED_CV_TEMPLATES } from "../../data/expandedCvData";
 import { buildCombinedPrompt } from "./Screen4Finish"; // Provide full prompt
 import { getRoleCvSupplement } from "../../data/roleCvSupplements";
+import { getRoleCvOverride } from "../../data/roleCvOverrides";
 
 // [PROMPT WIRING - Step 3] Helper to get dynamic prompt
 const getPromptForSection = (role: string | null, section: string): string => {
@@ -118,8 +119,28 @@ const COMPANY_INFO: Record<
   string,
   { name: string; color: string; textColor: string }
 > = {
-  expert: { name: "HR Expert", color: "#0f172a", textColor: "white" },
+  expert: { name: "HEAD", color: "#0f172a", textColor: "white" },
 };
+
+function getHeadRoleTitle(selectedRole: string | null): string {
+  const canonical = getCanonicalTrackKey(selectedRole);
+  const headByRole: Record<string, string> = {
+    "Software Engineering (SWE)": "Head of Engineering",
+    "Artificial Intelligence (AI) / Machine Learning (ML)": "Head of AI/ML",
+    "Data Analytics (DA) & Business Intelligence (BI)": "Head of Data Analytics",
+    "Data Engineering": "Head of Data Engineering",
+    "Cloud Engineering / DevOps": "Head of Cloud & DevOps",
+    "Product Management (PM)": "Head of Product",
+    "Product Growth / Growth PM": "Head of Growth",
+    "Business Analytics (BA)": "Head of Business Analytics",
+    "UI/UX / Product Design": "Head of Product Design",
+    "Project Management (Tech Projects)": "Head of Project Management",
+    "Business Development (Tech Industry)": "Head of Business Development",
+    "Digital Marketing (Tech-focused)": "Head of Digital Marketing",
+    "Operations (Tech Operations / Process Automation)": "Head of Operations",
+  };
+  return headByRole[canonical] ?? "Head";
+}
 
 const LEVEL_OPTS: { id: DiagnosticLevel; emoji: string; label: string }[] = [
   { id: "starter", emoji: "🌱", label: "Intern / Student" },
@@ -132,6 +153,19 @@ const LEVEL_LABEL: Record<DiagnosticLevel, string> = {
   developing: "Fresher",
   ready: "Strong Fresher",
 };
+
+const EXPERIENCE_LEVEL_TAG: Record<DiagnosticLevel, string> = {
+  starter: "Intern",
+  developing: "Fresher",
+  ready: "Trainee",
+};
+
+function withExperienceLevelTag(role: string, level: DiagnosticLevel): string {
+  const clean = (role || "").trim();
+  if (!clean) return EXPERIENCE_LEVEL_TAG[level];
+  if (/(intern|fresher|trainee)/i.test(clean)) return clean;
+  return `${clean} (${EXPERIENCE_LEVEL_TAG[level]})`;
+}
 
 const SECTION_LABEL: Record<CVSection, string> = {
   header: "Header & Contact",
@@ -1266,7 +1300,7 @@ function HRQuoteBubble({
     (roleData as any).hrQuote ||
     data.hrQuote;
   const hrName = roleData.hrName;
-  const hrRole = roleData.hrRole;
+  const hrRole = getHeadRoleTitle(selectedRole);
   const hrCompany = roleData?.hrCompany || "expert";
   const companyInfo = COMPANY_INFO[hrCompany] || COMPANY_INFO.expert;
 
@@ -1524,8 +1558,12 @@ function LeftCVColumn({
     generateFallbackCV(selectedRole || "Product Manager", level);
   const canonicalRole = getCanonicalTrackKey(selectedRole);
   const supplement = getRoleCvSupplement(canonicalRole, level);
+  const override = getRoleCvOverride(selectedRole, canonicalRole, level, cvBase);
   const cv: CVData = {
     ...cvBase,
+    ...(override ?? {}),
+    experience: override?.experience ?? cvBase.experience,
+    projects: override?.projects ?? cvBase.projects,
     skills: supplement?.skills ?? cvBase.skills,
     awards: supplement?.awards ?? cvBase.awards,
     activities: supplement?.activities ?? cvBase.activities,
@@ -1545,7 +1583,7 @@ function LeftCVColumn({
 
   /** Pulls real copy from this role’s sample CV — matches “Good Examples” below */
   const summaryLiveStages = buildLiveSummaryStages(
-    roleData.cvSummary,
+    cv.summary || roleData.cvSummary,
     cv.title
   ) as [Stage, Stage, Stage, Stage];
   const projectLiveStages = buildLiveProjectStages(
@@ -1817,7 +1855,7 @@ function LeftCVColumn({
                     paddingLeft: 2,
                   }}
                 >
-                  {roleData.cvSummary}
+                  {cv.summary || roleData.cvSummary}
                 </motion.p>
               </AnimatePresence>
             </CVSectionBlock>
@@ -1908,7 +1946,7 @@ function LeftCVColumn({
                               letterSpacing: "-0.02em",
                             }}
                           >
-                            {entry.role}
+                            {withExperienceLevelTag(entry.role, level)}
                           </span>
                           <span style={{ fontSize: 10, color: "#01001F" }}>
                             · {entry.company}
@@ -2107,63 +2145,6 @@ function LeftCVColumn({
               </AnimatePresence>
             </CVSectionBlock>
 
-            {/* ── SKILLS ── */}
-            {cv.skills && cv.skills.length > 0 && (
-              <CVSectionBlock
-                id="skills"
-                isActive={activeSection === "skills"}
-                isHovered={hoveredSection === "skills"}
-                onHover={onHover}
-                onClick={onActivate}
-              >
-                <SectionDivider
-                  text="Skills"
-                  active={activeSection === "skills"}
-                />
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`sk-${level}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.22 }}
-                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
-                  >
-                    {cv.skills.map((group: SkillGroupEntry, idx: number) => (
-                      <div key={`${group.category}-${idx}`}>
-                        <div
-                          style={{
-                            fontSize: 10.5,
-                            fontWeight: 700,
-                            color: "#0E56FA",
-                            marginBottom: 2,
-                            letterSpacing: "-0.01em",
-                          }}
-                        >
-                          {group.category}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 10.5,
-                            lineHeight: 1.55,
-                            letterSpacing: "-0.01em",
-                            color: "#01001F",
-                          }}
-                        >
-                          {group.items.map((item, itemIdx) => (
-                            <span key={`${group.category}-${item}-${itemIdx}`}>
-                              {renderHighlighted(item)}
-                              {itemIdx < group.items.length - 1 ? ", " : ""}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-              </CVSectionBlock>
-            )}
-
             {/* ── AWARDS ── */}
             {cv.awards && cv.awards.length > 0 && (
               <CVSectionBlock
@@ -2329,6 +2310,60 @@ function LeftCVColumn({
                             ))}
                           </div>
                         )}
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </CVSectionBlock>
+            )}
+
+            {/* ── SKILLS (moved to bottom) ── */}
+            {cv.skills && cv.skills.length > 0 && (
+              <CVSectionBlock
+                id="skills"
+                isActive={activeSection === "skills"}
+                isHovered={hoveredSection === "skills"}
+                onHover={onHover}
+                onClick={onActivate}
+              >
+                <SectionDivider text="Skills" active={activeSection === "skills"} />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`sk-${level}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
+                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
+                  >
+                    {cv.skills.map((group: SkillGroupEntry, idx: number) => (
+                      <div key={`${group.category}-${idx}`}>
+                        <div
+                          style={{
+                            fontSize: 10.5,
+                            fontWeight: 700,
+                            color: "#0E56FA",
+                            marginBottom: 2,
+                            letterSpacing: "-0.01em",
+                          }}
+                        >
+                          {group.category}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 10.5,
+                            lineHeight: 1.55,
+                            letterSpacing: "-0.01em",
+                            color: "#01001F",
+                          }}
+                        >
+                          {group.items.map((item, itemIdx) => (
+                            <span key={`${group.category}-${item}-${itemIdx}`}>
+                              {renderHighlighted(item)}
+                              {itemIdx < group.items.length - 1 ? ", " : ""}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     ))}
                   </motion.div>
@@ -3376,7 +3411,7 @@ export function Screen3Workspace({
 
       {/* ── HR Quote Bubble (FIX 1-5) ── */}
       <AnimatePresence>
-        {bubbleVisible && !["header", "awards", "activities"].includes(activeSection) && (
+        {bubbleVisible && !["header", "awards", "activities", "skills"].includes(activeSection) && (
           <div ref={bubbleRef}>
             <HRQuoteBubble
               section={activeSection}
