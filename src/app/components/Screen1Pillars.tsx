@@ -21,9 +21,15 @@ const PILLARS = [
     Icon: Code2,
     iconBg: "white",
     iconColor: NAVY,
-    title: "Engineering",
-    subtitle: "Build systems that scale",
-    roles: ["Frontend Engineer", "Backend Engineer", "Full Stack Dev", "DevOps", "Mobile Dev"],
+    title: "Engineering track",
+    subtitle: "Build and ship technical systems",
+    roles: [
+      "Software Engineering (SWE)",
+      "Artificial Intelligence (AI) / Machine Learning (ML)",
+      "Data Analytics (DA) & Business Intelligence (BI)",
+      "Data Engineering",
+      "Cloud Engineering / DevOps",
+    ],
     accent: BLUE,
   },
   {
@@ -31,9 +37,14 @@ const PILLARS = [
     Icon: Layers,
     iconBg: "white",
     iconColor: NAVY,
-    title: "Product & Analytics",
-    subtitle: "Define what gets built",
-    roles: ["Product Management (PM)", "Product Growth / Growth PM", "Business Analytics (BA)", "UI/UX / Product Design"],
+    title: "Product & analytics track",
+    subtitle: "Shape product and evidence-based decisions",
+    roles: [
+      "Product Management (PM)",
+      "Product Growth / Growth PM",
+      "Business Analytics (BA)",
+      "UI/UX / Product Design",
+    ],
     accent: BLUE,
   },
   {
@@ -41,9 +52,14 @@ const PILLARS = [
     Icon: Briefcase,
     iconBg: "white",
     iconColor: NAVY,
-    title: "Tech-Enabled Business",
-    subtitle: "Drive commercial impact",
-    roles: ["Sales Engineer", "Solutions Architect", "Partnerships Lead", "Operations"],
+    title: "Tech-enabled business roles",
+    subtitle: "Delivery, growth, and operations with a tech lens",
+    roles: [
+      "Project Management (Tech Projects)",
+      "Business Development (Tech Industry)",
+      "Digital Marketing (Tech-focused)",
+      "Operations (Tech Operations / Process Automation)",
+    ],
     accent: BLUE,
   },
   {
@@ -51,11 +67,11 @@ const PILLARS = [
     Icon: Cpu,
     iconBg: "white",
     iconColor: NAVY,
-    title: "AI Applications",
-    subtitle: "Shape the frontier",
+    title: "AI applications",
+    subtitle: "Applied AI as product, workflow, or core lever",
     roles: ["AI/ML Engineer", "AI Product Manager", "Prompt Engineer", "Data Scientist"],
     accent: BLUE,
-  }
+  },
 ];
 
 // ── Props ─────────────────────────────────────────────────────────
@@ -97,11 +113,17 @@ function PillarCard({
         border: `1.5px solid ${isActive ? BLUE : "#E2E8F0"}`,
         background: isActive ? ACTIVE_BG : "#FFFFFF",
         overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        minHeight: 116,
+        height: "100%",
         boxShadow: isActive
           ? `0 0 0 2px ${BLUE}20, 0 4px 16px rgba(14,86,250,0.12)`
           : "0 1px 4px rgba(1,0,31,0.06)",
         transition: "background 0.2s, box-shadow 0.2s",
         cursor: "pointer",
+        alignSelf: "start",
+        width: "100%",
       }}
     >
       {/* Header */}
@@ -141,13 +163,28 @@ function PillarCard({
               fontWeight: 700,
               color: "#01001F",
               letterSpacing: "-0.02em",
+              lineHeight: 1.2,
+              minHeight: 20,
+              maxHeight: 40,
+              overflow: "hidden",
               marginBottom: 2,
               fontFamily: "'Plus Jakarta Sans', sans-serif",
             }}
           >
             {pillar.title}
           </div>
-          <div style={{ fontSize: 12, color: MUTED, fontWeight: 400, fontFamily: "'Inter', sans-serif" }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: MUTED,
+              fontWeight: 400,
+              fontFamily: "'Inter', sans-serif",
+              lineHeight: 1.4,
+              minHeight: 17,
+              maxHeight: 34,
+              overflow: "hidden",
+            }}
+          >
             {pillar.subtitle}
           </div>
         </div>
@@ -169,7 +206,7 @@ function PillarCard({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            style={{ overflow: "hidden" }}
+            style={{ overflow: "hidden", flex: "0 0 auto", width: "100%" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div
@@ -185,25 +222,35 @@ function PillarCard({
                   letterSpacing: "0.08em",
                   color: ac,
                   textTransform: "uppercase",
-                  marginBottom: 12,
+                  marginBottom: 10,
                   marginTop: 14,
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
                 Select a specific role →
               </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr",
+                  gap: 8,
+                  width: "100%",
+                }}
+              >
                 {pillar.roles.map((role) => {
                   const isSelected = selectedRole === role;
                   return (
                     <motion.button
                       key={role}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
+                      type="button"
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
                       onClick={() => onSelectRole(role)}
                       style={{
-                        padding: "6px 13px",
-                        borderRadius: 99,
+                        width: "100%",
+                        minHeight: 44,
+                        padding: "10px 14px",
+                        borderRadius: 10,
                         border: `1px solid ${isSelected ? ac : ac + "30"}`,
                         background: isSelected ? ac : ac + "10",
                         color: isSelected ? "white" : ac,
@@ -212,11 +259,13 @@ function PillarCard({
                         cursor: "pointer",
                         transition: "all 0.15s",
                         letterSpacing: "-0.01em",
-                        textAlign: "center",
-                        display: "inline-flex",
+                        textAlign: "left",
+                        lineHeight: 1.35,
+                        display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
+                        justifyContent: "flex-start",
                         fontFamily: "'Inter', sans-serif",
+                        boxSizing: "border-box",
                       }}
                     >
                       {role}
@@ -467,6 +516,7 @@ export function Screen1Pillars({
           gridTemplateColumns: "repeat(2, 1fr)",
           gap: 12,
           marginBottom: 32,
+          alignItems: "start",
         }}
       >
         {PILLARS.map((pillar) => (

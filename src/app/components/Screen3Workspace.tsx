@@ -5,6 +5,12 @@ import { getRoleLevelData } from "../../data/roleData";
 import { trackEvent, handleScrollDepthTracking } from "../../utils/analytics";
 import { PROMPTS_DATA, SectionPrompts } from "../../data/promptsData"; // [PROMPT WIRING - Step 3]
 import { ROLE_TO_PROMPT_KEY } from "../../data/rolePromptMapping"; // [PROMPT WIRING - Step 3]
+import { getCanonicalTrackKey, getExpandedCvTemplateKey } from "../../data/roleKeyMapping";
+import { padTransformStagesToFour } from "../../data/transformStages";
+import {
+  buildLiveProjectStages,
+  buildLiveSummaryStages,
+} from "../../data/generatedSectionTransforms";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Check,
@@ -23,14 +29,19 @@ import {
   Building2,
 } from "lucide-react";
 import { DiagnosticLevel } from "../types";
-import { CV_TEMPLATES, TRANSFORM_TEMPLATES, CVData, ExperienceEntry, ProjectEntry, AwardEntry, ActivityEntry, generateFallbackCV } from "../../data/cvTemplates";
+import { CV_TEMPLATES, TRANSFORM_TEMPLATES, CVData, ExperienceEntry, ProjectEntry, AwardEntry, ActivityEntry, SkillGroupEntry, generateFallbackCV } from "../../data/cvTemplates";
 import { EXPANDED_CV_TEMPLATES } from "../../data/expandedCvData";
 import { buildCombinedPrompt } from "./Screen4Finish"; // Provide full prompt
+import { getRoleCvSupplement } from "../../data/roleCvSupplements";
 
 // [PROMPT WIRING - Step 3] Helper to get dynamic prompt
 const getPromptForSection = (role: string | null, section: string): string => {
   const safeRole = role || "Product Manager";
-  const promptKey = ROLE_TO_PROMPT_KEY[safeRole] ?? "Product Management (PM)";
+  const canonical = getCanonicalTrackKey(safeRole);
+  const promptKey =
+    ROLE_TO_PROMPT_KEY[canonical] ??
+    ROLE_TO_PROMPT_KEY[safeRole] ??
+    "Product Management (PM)";
   const sectionData = PROMPTS_DATA[promptKey];
   if (!sectionData) return "Prompt not available for this role.";
   return (
@@ -84,7 +95,7 @@ const TOUR_CONTENT = [
   {
     title: "🔓 Unlock Your Master AI Prompt",
     description:
-      "Complete all 9 checklist items (3 per section). Once you hit 9/9, a Master AI Prompt unlocks. Copy it, paste it with your CV into ChatGPT or Claude, and get professional rewrites instantly!",
+      "Complete all 9 checklist items (3 per section). Once you hit 9/9, a Master AI Prompt unlocks. Copy it, then use it in an LLM session together with your CV text below to get professional rewrites instantly!",
     buttonText: "Let's Start! 🎉",
   },
 ];
@@ -111,15 +122,15 @@ const COMPANY_INFO: Record<
 };
 
 const LEVEL_OPTS: { id: DiagnosticLevel; emoji: string; label: string }[] = [
-  { id: "starter", emoji: "🌱", label: "Beginner" },
-  { id: "developing", emoji: "🚀", label: "Mid-Level" },
-  { id: "ready", emoji: "🎯", label: "Expert" },
+  { id: "starter", emoji: "🌱", label: "Intern / Student" },
+  { id: "developing", emoji: "🚀", label: "Fresher" },
+  { id: "ready", emoji: "🎯", label: "Strong Fresher" },
 ];
 
 const LEVEL_LABEL: Record<DiagnosticLevel, string> = {
-  starter: "Beginner",
-  developing: "Mid-Level",
-  ready: "Expert",
+  starter: "Intern / Student",
+  developing: "Fresher",
+  ready: "Strong Fresher",
 };
 
 const SECTION_LABEL: Record<CVSection, string> = {
@@ -147,7 +158,7 @@ const PANEL_DATA: Record<CVSection, Record<DiagnosticLevel, PanelData>> = {
       aiTitle: "Struggling to write this?",
       aiSubtext:
         "Use our prompt to let your AI turn raw activity descriptions into professional, XYZ-formatted bullet points.",
-      aiPrompt: `Act as an expert Tech Recruiter for entry-level PM roles.\n\nRewrite the following raw activity into 3 professional bullet points using the XYZ Google formula: "Accomplished [X] as measured by [Y], by doing [Z]."\n\nRequirements:\n- Start each bullet with a strong action verb\n- No "I" or "my" — professional third-person\n- Include team size, tools, or any available scope\n- Emphasize initiative and ownership\n\nRaw activity:\n[PASTE YOUR DESCRIPTION HERE]`,
+      aiPrompt: `Act as an expert Tech Recruiter for entry-level PM roles.\n\nRewrite the following raw activity into 3 professional bullet points using the XYZ Google formula: "Accomplished [X] as measured by [Y], by doing [Z]."\n\nRequirements:\n- Start each bullet with a strong action verb\n- No "I" or "my" — professional third-person\n- Include team size, tools, or any available scope\n- Emphasize initiative and ownership\n\nRaw activity:\n[Insert your description here]`,
     },
     developing: {
       hrQuote:
@@ -159,7 +170,7 @@ const PANEL_DATA: Record<CVSection, Record<DiagnosticLevel, PanelData>> = {
       aiTitle: "Struggling to write this?",
       aiSubtext:
         "Use our prompt to let your AI rewrite your raw bullet points into HR-approved XYZ formats with real metrics.",
-      aiPrompt: `Act as an expert Tech Recruiter specializing in mid-level PM roles.\n\nRewrite the following experience into 3 powerful bullet points using the XYZ Google formula.\n\nRequirements:\n- Start with strong verbs (Led, Spearheaded, Optimised, Defined, Shipped)\n- Include specific metrics: %, $, user counts, NPS scores\n- Show cross-functional collaboration\n- Demonstrate product thinking (why, not just what)\n\nRaw bullets:\n[PASTE YOUR BULLET POINTS HERE]\n\nContext: I'm applying for [ROLE] at [COMPANY TYPE, e.g. Series B SaaS startup].`,
+      aiPrompt: `Act as an expert Tech Recruiter specializing in mid-level PM roles.\n\nRewrite the following experience into 3 powerful bullet points using the XYZ Google formula.\n\nRequirements:\n- Start with strong verbs (Led, Spearheaded, Optimised, Defined, Shipped)\n- Include specific metrics: %, $, user counts, NPS scores\n- Show cross-functional collaboration\n- Demonstrate product thinking (why, not just what)\n\nRaw bullets:\n[Insert your bullet points here]\n\nContext: I'm applying for [ROLE] at [COMPANY TYPE, e.g. Series B SaaS startup].`,
     },
     ready: {
       hrQuote:
@@ -171,7 +182,7 @@ const PANEL_DATA: Record<CVSection, Record<DiagnosticLevel, PanelData>> = {
       aiTitle: "Struggling to elevate this?",
       aiSubtext:
         "Use this prompt to transform mid-level bullets into executive-grade, business-impact statements.",
-      aiPrompt: `Act as an executive CV consultant for senior Product leadership.\n\nElevate the following bullets to Director/VP level:\n1. Lead with business impact at company scale (ARR, retention, market share)\n2. Show strategic ownership (not just execution)\n3. Demonstrate cross-functional leadership (squad size, budget, org influence)\n4. Use executive vocabulary: Spearheaded, Orchestrated, Championed, Architected\n\nCurrent bullets:\n[PASTE YOUR BULLETS HERE]\n\nTarget role: [Director / VP / Senior Lead]\nIndustry: [e.g., B2B SaaS, Enterprise Software, Fintech]`,
+      aiPrompt: `Act as an executive CV consultant for senior Product leadership.\n\nElevate the following bullets to Director/VP level:\n1. Lead with business impact at company scale (ARR, retention, market share)\n2. Show strategic ownership (not just execution)\n3. Demonstrate cross-functional leadership (squad size, budget, org influence)\n4. Use executive vocabulary: Spearheaded, Orchestrated, Championed, Architected\n\nCurrent bullets:\n[Insert your bullets here]\n\nTarget role: [Director / VP / Senior Lead]\nIndustry: [e.g., B2B SaaS, Enterprise Software, Fintech]`,
     },
   },
   summary: {
@@ -1246,7 +1257,10 @@ function HRQuoteBubble({
   isMobile: boolean;
 }) {
   const data = PANEL_DATA[section] ? PANEL_DATA[section][level] : PANEL_DATA["experience"][level];
-  const roleData = getRoleLevelData(selectedRole, level);
+  const roleData = getRoleLevelData(
+    selectedRole == null ? null : getCanonicalTrackKey(selectedRole),
+    level
+  );
   const hrQuote =
     (roleData as any).hrQuotes?.[section] ||
     (roleData as any).hrQuote ||
@@ -1481,60 +1495,8 @@ function HRQuoteBubble({
   );
 }
 
-// Maps a role string to a key inside EXPANDED_CV_TEMPLATES.
-// Routes every role to the correct personalized CV bucket.
-const getCVTemplateKey = (role: string | null): string => {
-  const safeRole = role || "";
-
-  // ── Explicit role-name mappings (Screen1Pillars roles) ──────────────────────
-  const ROLE_MAP: Record<string, string> = {
-    "Frontend Engineer":    "Software Engineering (SWE)",
-    "Backend Engineer":     "Software Engineering (SWE)",
-    "Full Stack Dev":       "Software Engineering (SWE)",
-    "Full-Stack Dev":       "Software Engineering (SWE)",
-    "Mobile Dev":           "Software Engineering (SWE)",
-    "DevOps":               "Cloud Engineering / DevOps",
-    "Product Management (PM)": "Product Management (PM)",
-    "Product Growth / Growth PM": "Product Growth / Growth PM",
-    "Business Analytics (BA)": "Business Analytics (BA)",
-    "UI/UX / Product Design": "UI/UX / Product Design",
-    "Sales Engineer":       "Business Development (Tech Industry)",
-    "Solutions Architect":  "Software Engineering (SWE)",
-    "Partnerships Lead":    "Business Development (Tech Industry)",
-    "Operations":           "Operations (Tech Operations / Process Automation)",
-    "AI/ML Engineer":       "Artificial Intelligence (AI) / Machine Learning (ML)",
-    "AI Product Manager":   "Artificial Intelligence (AI) / Machine Learning (ML)",
-    "Prompt Engineer":      "Artificial Intelligence (AI) / Machine Learning (ML)",
-    "Data Scientist":       "Data Analytics (DA) & Business Intelligence (BI)",
-  };
-  if (ROLE_MAP[safeRole]) return ROLE_MAP[safeRole];
-
-  // ── Generic fallback by keyword ──────────────────────────────────────────────
-  if (safeRole.includes("AI") || safeRole.includes("Machine Learning") || safeRole.includes("Data Engineering"))
-    return "Artificial Intelligence (AI) / Machine Learning (ML)";
-  if (safeRole.includes("Data") || safeRole.includes("Analytics") || safeRole.includes("Business Intelligence"))
-    return "Data Analytics (DA) & Business Intelligence (BI)";
-  if (safeRole.includes("Cloud") || safeRole.includes("DevOps"))
-    return "Cloud Engineering / DevOps";
-  if (safeRole.includes("Engineer") || safeRole.includes("SWE") || safeRole.includes("Developer") || safeRole.includes("Dev"))
-    return "Software Engineering (SWE)";
-  if (safeRole.includes("Growth"))
-    return "Product Growth / Growth PM";
-  if (safeRole.includes("UI") || safeRole.includes("UX") || safeRole.includes("Design"))
-    return "UI/UX / Product Design";
-  if (safeRole.includes("Business Development"))
-    return "Business Development (Tech Industry)";
-  if (safeRole.includes("Marketing"))
-    return "Digital Marketing (Tech-focused)";
-  if (safeRole.includes("Operations") || safeRole.includes("Process"))
-    return "Operations (Tech Operations / Process Automation)";
-  if (safeRole.includes("Project"))
-    return "Project Management (Tech Projects)";
-  if (safeRole.includes("Business Analytics") || safeRole.includes("BA"))
-    return "Business Analytics (BA)";
-  return "Product Management (PM)";
-};
-// Keep old name as alias for any external consumers
+// Maps UI role labels → keys in EXPANDED_CV_TEMPLATES / TRANSFORM_TEMPLATES / ROLE_DATA
+const getCVTemplateKey = getCanonicalTrackKey;
 const getTrackForRole = getCVTemplateKey;
 
 function LeftCVColumn({
@@ -1556,13 +1518,39 @@ function LeftCVColumn({
   selectedRole: string | null;
 }) {
   const cvKey = getCVTemplateKey(selectedRole);
-  // EXPANDED_CV_TEMPLATES is keyed by exact role name - look it up directly first
-  const cv: CVData = (EXPANDED_CV_TEMPLATES[selectedRole || ""]?.[level])
-    ?? (EXPANDED_CV_TEMPLATES[cvKey]?.[level])
-    ?? generateFallbackCV(selectedRole || "Product Manager", level);
+  const expandedKey = getExpandedCvTemplateKey(selectedRole);
+  const cvBase: CVData =
+    EXPANDED_CV_TEMPLATES[expandedKey]?.[level] ??
+    generateFallbackCV(selectedRole || "Product Manager", level);
+  const canonicalRole = getCanonicalTrackKey(selectedRole);
+  const supplement = getRoleCvSupplement(canonicalRole, level);
+  const cv: CVData = {
+    ...cvBase,
+    skills: supplement?.skills ?? cvBase.skills,
+    awards: supplement?.awards ?? cvBase.awards,
+    activities: supplement?.activities ?? cvBase.activities,
+  };
   const TRANSFORM = TRANSFORM_TEMPLATES[cvKey] ?? TRANSFORM_TEMPLATES["Product Management (PM)"];
-  const roleData = getRoleLevelData(selectedRole, level);
+  const roleData = getRoleLevelData(
+    selectedRole == null ? null : getCanonicalTrackKey(selectedRole),
+    level
+  );
   const stageIndex = checks.filter(Boolean).length;
+
+  const paddedStages = (
+    sec: "header" | "summary" | "experience" | "projects",
+    raw: Stage[][] | undefined
+  ): [Stage, Stage, Stage, Stage] =>
+    padTransformStagesToFour(raw, sec) as [Stage, Stage, Stage, Stage];
+
+  /** Pulls real copy from this role’s sample CV — matches “Good Examples” below */
+  const summaryLiveStages = buildLiveSummaryStages(
+    roleData.cvSummary,
+    cv.title
+  ) as [Stage, Stage, Stage, Stage];
+  const projectLiveStages = buildLiveProjectStages(
+    cv.projects?.[0]
+  ) as [Stage, Stage, Stage, Stage];
 
   const ACTION_VERBS = new Set([
     "led",
@@ -1725,7 +1713,7 @@ function LeftCVColumn({
                   letterSpacing: "-0.01em",
                 }}
               >
-                {roleData.cvTitle}
+                {cv.title}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                 {[
@@ -1761,7 +1749,7 @@ function LeftCVColumn({
                   </div>
                   <TransformBullet
                     section="header"
-                    stages={TRANSFORM.header[level].stages}
+                    stages={paddedStages("header", TRANSFORM.header[level].stages)}
                     stageIndex={stageIndex}
                   />
                 </div>
@@ -1780,7 +1768,7 @@ function LeftCVColumn({
                 text="Professional Summary"
                 active={activeSection === "summary"}
               />
-              {activeSection === "summary" && TRANSFORM?.summary?.[level]?.stages && (
+              {activeSection === "summary" && (
                 <div style={{ marginBottom: 8 }}>
                   <div
                     style={{
@@ -1792,11 +1780,11 @@ function LeftCVColumn({
                       marginBottom: 6,
                     }}
                   >
-                    {TRANSFORM.summary[level].demoLabel}
+                    {TRANSFORM?.summary?.[level]?.demoLabel ?? "Live summary (your role sample)"}
                   </div>
                   <TransformBullet
                     section="summary"
-                    stages={TRANSFORM.summary[level].stages}
+                    stages={summaryLiveStages}
                     stageIndex={stageIndex}
                   />
                   <div
@@ -1862,7 +1850,7 @@ function LeftCVColumn({
                   </div>
                   <TransformBullet
                     section="experience"
-                    stages={TRANSFORM.experience[level].stages}
+                    stages={paddedStages("experience", TRANSFORM.experience[level].stages)}
                     stageIndex={stageIndex}
                   />
                   <div
@@ -1998,7 +1986,7 @@ function LeftCVColumn({
                 text="Projects"
                 active={activeSection === "projects"}
               />
-              {activeSection === "projects" && TRANSFORM?.projects?.[level]?.stages && (
+              {activeSection === "projects" && (
                 <div style={{ marginBottom: 10 }}>
                   <div
                     style={{
@@ -2010,11 +1998,11 @@ function LeftCVColumn({
                       marginBottom: 6,
                     }}
                   >
-                    {TRANSFORM.projects[level].demoLabel}
+                    {TRANSFORM?.projects?.[level]?.demoLabel ?? "Live project bullet (first project)"}
                   </div>
                   <TransformBullet
                     section="projects"
-                    stages={TRANSFORM.projects[level].stages}
+                    stages={projectLiveStages}
                     stageIndex={stageIndex}
                   />
                   <div
@@ -2118,6 +2106,63 @@ function LeftCVColumn({
                 </motion.div>
               </AnimatePresence>
             </CVSectionBlock>
+
+            {/* ── SKILLS ── */}
+            {cv.skills && cv.skills.length > 0 && (
+              <CVSectionBlock
+                id="skills"
+                isActive={activeSection === "skills"}
+                isHovered={hoveredSection === "skills"}
+                onHover={onHover}
+                onClick={onActivate}
+              >
+                <SectionDivider
+                  text="Skills"
+                  active={activeSection === "skills"}
+                />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`sk-${level}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.22 }}
+                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
+                  >
+                    {cv.skills.map((group: SkillGroupEntry, idx: number) => (
+                      <div key={`${group.category}-${idx}`}>
+                        <div
+                          style={{
+                            fontSize: 10.5,
+                            fontWeight: 700,
+                            color: "#0E56FA",
+                            marginBottom: 2,
+                            letterSpacing: "-0.01em",
+                          }}
+                        >
+                          {group.category}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 10.5,
+                            lineHeight: 1.55,
+                            letterSpacing: "-0.01em",
+                            color: "#01001F",
+                          }}
+                        >
+                          {group.items.map((item, itemIdx) => (
+                            <span key={`${group.category}-${item}-${itemIdx}`}>
+                              {renderHighlighted(item)}
+                              {itemIdx < group.items.length - 1 ? ", " : ""}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </CVSectionBlock>
+            )}
 
             {/* ── AWARDS ── */}
             {cv.awards && cv.awards.length > 0 && (
@@ -2515,12 +2560,15 @@ function RightInsightPanel({
   section: CVSection;
   level: DiagnosticLevel;
   sectionChecks: Record<string, boolean[]>;
-  onSectionChecksChange: (c: [boolean, boolean, boolean]) => void;
+  onSectionChecksChange: (section: CVSection, c: [boolean, boolean, boolean]) => void;
   onContinue: (prompt: string) => void;
   selectedRole: string | null;
 }) {
   const data = PANEL_DATA[section] ? PANEL_DATA[section][level] : PANEL_DATA["experience"][level];
-  const roleData = getRoleLevelData(selectedRole, level);
+  const roleData = getRoleLevelData(
+    selectedRole == null ? null : getCanonicalTrackKey(selectedRole),
+    level
+  );
   // Override HR data and checklist with role-specific content
   const hrQuote =
     (roleData as any).hrQuotes?.[section] ||
@@ -2567,9 +2615,13 @@ function RightInsightPanel({
         ? (Array.isArray(roleData.summaryChecklist) && roleData.summaryChecklist.length === 3
             ? roleData.summaryChecklist as [string, string, string]
             : FALLBACK_CHECKLIST)
-        : (Array.isArray(transformAtLevel?.checklistItems) && transformAtLevel!.checklistItems.length === 3
-            ? transformAtLevel!.checklistItems as [string, string, string]
-            : FALLBACK_CHECKLIST);
+      : section === "projects"
+        ? (Array.isArray(roleData.projectsChecklist) && roleData.projectsChecklist.length === 3
+            ? roleData.projectsChecklist as [string, string, string]
+            : (Array.isArray(transformAtLevel?.checklistItems) && transformAtLevel!.checklistItems.length === 3
+                ? transformAtLevel!.checklistItems as [string, string, string]
+                : FALLBACK_CHECKLIST))
+      : FALLBACK_CHECKLIST;
   const transform = transformAtLevel;
   const panelKey = `${section}-${level}-${cvKey}`;
   const [copied, setCopied] = useState(false);
@@ -2596,7 +2648,8 @@ function RightInsightPanel({
     trackEvent("prompt_copied", {
       role: selectedRole || "Unknown",
       prompt_key:
-        ROLE_TO_PROMPT_KEY[selectedRole || ""] ?? "Product Management (PM)",
+        ROLE_TO_PROMPT_KEY[getCanonicalTrackKey(selectedRole || "")] ??
+        "Product Management (PM)",
       section: section,
     });
 
@@ -2814,7 +2867,7 @@ function RightInsightPanel({
               <StepChecklist
                 items={checklistItems}
                 checks={checks}
-                onChange={onSectionChecksChange}
+                onChange={(c) => onSectionChecksChange(section, c)}
               />
 
               {/* All-done celebration */}
@@ -2854,7 +2907,7 @@ function RightInsightPanel({
               /* Info panel for non-core sections (header, awards, activities) */
               <div style={{ padding: "14px 18px", borderRadius: 12, background: "rgba(14,86,250,0.04)", border: "1px solid rgba(14,86,250,0.12)" }}>
                 <p style={{ fontSize: 12.5, color: "#01001F", lineHeight: 1.6, margin: 0 }}>
-                  💡 <strong>Tip:</strong> Use the AI prompt below to generate strong, role-specific content for this section. Paste it into ChatGPT or Claude with your CV details.
+                  💡 <strong>Tip:</strong> Use the AI prompt below to generate strong, role-specific content for this section. Add it to an LLM session with your CV details.
                 </p>
               </div>
             )}
@@ -3095,7 +3148,7 @@ function RightInsightPanel({
                       <Sparkles size={14} strokeWidth={2.5} />
                     )}
                     {copied
-                      ? "Copied! Paste into your AI →"
+                      ? "Copied! Ready for your LLM session →"
                       : "✨ Copy AI Prompt Template"}
                   </motion.button>
                   {copied && (
@@ -3109,7 +3162,7 @@ function RightInsightPanel({
                         fontWeight: 500,
                       }}
                     >
-                      Paste this into your AI along with your raw bullet points.
+                      Add this prompt to your LLM session together with your raw bullet points.
                     </motion.p>
                   )}
                 </motion.div>
@@ -3243,8 +3296,11 @@ export function Screen3Workspace({
   } | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleChecksChange = (newChecks: [boolean, boolean, boolean]) => {
-    const currentSectionChecks = sectionChecks[activeSection] || [false, false, false];
+  const handleChecksChange = (
+    section: CVSection,
+    newChecks: [boolean, boolean, boolean]
+  ) => {
+    const currentSectionChecks = sectionChecks[section] || [false, false, false];
     for (let i = 0; i < 3; i++) {
       if (newChecks[i] && !currentSectionChecks[i]) {
         if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -3253,9 +3309,9 @@ export function Screen3Workspace({
         break;
       }
     }
-    setSectionChecks(prev => ({
+    setSectionChecks((prev) => ({
       ...prev,
-      [activeSection]: newChecks
+      [section]: newChecks,
     }));
   };
 

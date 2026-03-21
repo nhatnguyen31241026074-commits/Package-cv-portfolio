@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Download, ExternalLink, RotateCcw, Check, ArrowLeft } from "lucide-react";
-import { PROMPTS_DATA, SectionPrompts } from "../../data/promptsData";
-import { ROLE_TO_PROMPT_KEY } from "../../data/rolePromptMapping";
+import { Copy, RotateCcw, Check, ArrowLeft } from "lucide-react";
+import { getCanonicalTrackKey } from "../../data/roleKeyMapping";
+import { buildPresentationMasterPrompt } from "../../data/presentationMasterPrompt";
 
 // ── Confetti Canvas ────────────────────────────────────────────────
 
@@ -150,7 +150,9 @@ interface Props {
 }
 
 export function buildCombinedPrompt(role: string | null): string {
-  const safeRole = role || "Product Management (PM)";
+  const safeRole = role
+    ? getCanonicalTrackKey(role)
+    : "Product Management (PM)";
   return `I want you to act like a strict but highly constructive HR/Recruitment Coordinator who has meticulously screened over 10,000 CVs in the tech industry. Your goal is to review my current CV draft and instantly point out missing information, weak verbs, or vague statements. Focus on making my CV sound “ready for impact” by tying my skills to quantifiable outcomes or clear value adds.
 
 Here is my target role: [ ${safeRole} ]
@@ -170,6 +172,23 @@ Be brutal but highly actionable. Provide the fully re-written bullet points and 
 // ── Main Screen ───────────────────────────────────────────────────
 
 export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
+  const [copied, setCopied] = useState(false);
+  const canonicalRole = getCanonicalTrackKey(selectedRole ?? null);
+  const masterPrompt = useMemo(
+    () => buildPresentationMasterPrompt(canonicalRole),
+    [canonicalRole]
+  );
+
+  const handleCopyMaster = async () => {
+    try {
+      await navigator.clipboard.writeText(masterPrompt);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2200);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -211,7 +230,7 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
           position: "relative",
           zIndex: 1,
           width: "100%",
-          maxWidth: 560,
+          maxWidth: 640,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -254,7 +273,7 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
           </span>
         </motion.div>
 
-        {/* Trophy icon */}
+        {/* Project X mark */}
         <motion.div
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -265,19 +284,30 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
             delay: 0.1,
           }}
           style={{
-            width: 88,
-            height: 88,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #0E56FA 0%, #17CAFA 100%)",
+            width: 222,
+            height: 104,
+            borderRadius: 20,
+            background: "#FFFFFF",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 8px 32px rgba(14,86,250,0.4)",
+            boxShadow: "0 8px 32px rgba(14,86,250,0.25)",
             marginBottom: 28,
-            fontSize: 40,
+            border: "1px solid rgba(14,86,250,0.15)",
+            padding: "10px 14px",
+            boxSizing: "border-box",
+            overflow: "hidden",
           }}
         >
-          🎯
+          <img
+            src="/preview_icon.png"
+            alt="Project X"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+            }}
+          />
         </motion.div>
 
         {/* Headline */}
@@ -330,12 +360,12 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
           </h1>
 
           <p style={{ fontSize: 15, color: "#01001F", lineHeight: 1.6 }}>
-            Download the official PJX CV Guidelines & Template package for 2026.
-            <br />Apply the master prompt you just unlocked and start iterating!
+            You finished the section-by-section audit. This last step is different: one prompt for the{" "}
+            <strong>whole CV</strong> — layout, flow, balance, and how scannable it is for your track.
           </p>
         </motion.div>
 
-        {/* Action Buttons */}
+        {/* Holistic presentation prompt */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -344,42 +374,129 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: 12,
+            gap: 14,
           }}
         >
-          {/* Primary CTA (Download PDF) */}
-          <a
-            href="/PJX_CV_Guide_2026.pdf"
-            download
+          <div
+            style={{
+              padding: "14px 16px",
+              borderRadius: 12,
+              border: "1px solid rgba(14,86,250,0.2)",
+              background: "rgba(14,86,250,0.04)",
+            }}
+          >
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.07em",
+                textTransform: "uppercase",
+                color: "#0E56FA",
+                marginBottom: 6,
+                fontFamily: "'Outfit', sans-serif",
+              }}
+            >
+              Whole-document prompt
+            </p>
+            <p style={{ fontSize: 13, color: "#01001F", lineHeight: 1.5, margin: 0 }}>
+              Tailored to <strong>{canonicalRole}</strong>. Use it as the main instruction in a fresh LLM
+              session, then add your <strong>complete CV text</strong> in the same conversation so the model can
+              judge structure and presentation — not just individual bullets.
+            </p>
+          </div>
+
+          <textarea
+            readOnly
+            value={masterPrompt}
+            aria-label="Holistic CV presentation prompt"
             style={{
               width: "100%",
-              padding: "20px 32px",
+              minHeight: 220,
+              padding: "14px 16px",
+              borderRadius: 12,
+              border: "1px solid #E2E8F0",
+              fontSize: 12,
+              lineHeight: 1.55,
+              fontFamily: "ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace",
+              color: "#0f172a",
+              resize: "vertical",
+              background: "#F8FAFC",
+              boxSizing: "border-box",
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={handleCopyMaster}
+            style={{
+              width: "100%",
+              padding: "18px 28px",
               borderRadius: 12,
               background: "#0E56FA",
               color: "white",
-              fontSize: 17,
+              fontSize: 16,
               fontWeight: 700,
               fontFamily: "'Outfit', sans-serif",
-              textDecoration: "none",
+              border: "none",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 10,
-              border: "none",
               boxShadow: "0 8px 24px rgba(14,86,250,0.3)",
-              transition: "transform 0.2sease-in-out, box-shadow 0.2s",
+              transition: "transform 0.2s ease, box-shadow 0.2s",
             }}
             onMouseOver={(e) => {
-              Object.assign(e.currentTarget.style, { transform: 'translateY(-2px)', boxShadow: '0 12px 32px rgba(14,86,250,0.45)' });
+              Object.assign(e.currentTarget.style, {
+                transform: "translateY(-2px)",
+                boxShadow: "0 12px 32px rgba(14,86,250,0.45)",
+              });
             }}
             onMouseOut={(e) => {
-              Object.assign(e.currentTarget.style, { transform: 'translateY(0)', boxShadow: '0 8px 24px rgba(14,86,250,0.3)' });
+              Object.assign(e.currentTarget.style, {
+                transform: "translateY(0)",
+                boxShadow: "0 8px 24px rgba(14,86,250,0.3)",
+              });
             }}
           >
-            <Download size={18} strokeWidth={2.5} />
-            Download Full PJX CV Guide 2026
-          </a>
+            {copied ? (
+              <>
+                <Check size={18} strokeWidth={2.5} />
+                Copied
+              </>
+            ) : (
+              <>
+                <Copy size={18} strokeWidth={2.5} />
+                Copy whole-CV prompt
+              </>
+            )}
+          </button>
+
+          <div
+            style={{
+              padding: "16px 18px",
+              borderRadius: 12,
+              border: "1px solid #E2E8F0",
+              background: "#FFFFFF",
+            }}
+          >
+            <p
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#01001F",
+                marginBottom: 10,
+                fontFamily: "'Outfit', sans-serif",
+              }}
+            >
+              Why this step exists
+            </p>
+            <p style={{ fontSize: 13, color: "#334155", lineHeight: 1.55, margin: 0 }}>
+              The checklist improves each section’s content (bullets, metrics, and role wording). This step
+              refines the full CV view: section order, visual rhythm, consistency, and whether the document reads
+              like the track you chose.
+            </p>
+          </div>
         </motion.div>
 
         {/* Actions row: Back & Restart */}
@@ -469,10 +586,19 @@ export function Screen4Finish({ onRestart, onBack, selectedRole }: Props) {
             boxShadow: "0 2px 8px rgba(1,0,31,0.03)",
           }}
         >
-          <p style={{ fontSize: 12, color: "#01001F", lineHeight: 1.6 }}>
+          <p
+            style={{
+              fontSize: 12,
+              color: "#01001F",
+              lineHeight: 1.6,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              margin: 0,
+            }}
+          >
             <strong style={{ color: "#01001F", fontFamily: "'Outfit', sans-serif" }}>Career Survival Kit</strong> ·
-            Built for university students and early-career professionals
-            applying for tech roles in 2026.
+            Built for university students and early-career professionals applying for tech roles in 2026.
           </p>
         </motion.div>
       </div>

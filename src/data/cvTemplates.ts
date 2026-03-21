@@ -11,6 +11,7 @@ export type ProjectEntry = { name: string; type: string; bullets: string[] };
 
 export type AwardEntry = { name: string; issuer: string; date: string; description?: string };
 export type ActivityEntry = { organisation: string; role: string; dates: string; bullets?: string[] };
+export type SkillGroupEntry = { category: string; items: string[] };
 
 export type CVData = {
   name: string;
@@ -21,6 +22,7 @@ export type CVData = {
   summary: string;
   experience: ExperienceEntry[];
   projects: ProjectEntry[];
+  skills?: SkillGroupEntry[];
   awards?: AwardEntry[];
   activities?: ActivityEntry[];
 };
@@ -75,7 +77,11 @@ export const generateFallbackCV = (role: string, level: DiagnosticLevel): CVData
           `Deployed an MVP that actively handles test traffic.`
         ]
       }
-    ]
+    ],
+    skills: [
+      { category: "Core", items: ["Problem Solving", "Communication", "Team Collaboration"] },
+      { category: "Tools", items: ["Git", "Notion", "Google Workspace"] },
+    ],
   };
 };
 

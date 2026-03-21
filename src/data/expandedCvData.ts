@@ -53,7 +53,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Linh Pham",
-      "title": "Frontend Engineer",
+      "title": "Frontend Engineer Fresher",
       "email": "linh.pham@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/linhpham-fe",
@@ -102,7 +102,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Linh Pham",
-      "title": "Senior Frontend Engineer",
+      "title": "Frontend Engineer (early-career)",
       "email": "linh.pham@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/linhpham-fe",
@@ -202,7 +202,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Duc Nguyen",
-      "title": "Backend Engineer",
+      "title": "Backend Engineer Fresher",
       "email": "duc.nguyen.dev@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/ducnguyen-be",
@@ -260,7 +260,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Duc Nguyen",
-      "title": "Senior Backend Engineer",
+      "title": "Backend Engineer (early-career)",
       "email": "duc.nguyen.dev@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/ducnguyen-be",
@@ -360,7 +360,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "An Tran",
-      "title": "Full Stack Developer",
+      "title": "Full Stack Developer Fresher",
       "email": "an.tran.dev@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/antran-fullstack",
@@ -409,7 +409,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "An Tran",
-      "title": "Lead Full Stack Developer",
+      "title": "Full Stack Developer (early-career)",
       "email": "an.tran.dev@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/antran-fullstack",
@@ -509,7 +509,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Khanh Le",
-      "title": "Mobile Developer",
+      "title": "Mobile Developer Fresher",
       "email": "khanh.mobile@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/khanhle-mobile",
@@ -558,7 +558,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Khanh Le",
-      "title": "Senior Mobile Engineer",
+      "title": "Mobile Engineer (early-career)",
       "email": "khanh.mobile@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/khanhle-mobile",
@@ -658,7 +658,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Hai Vo",
-      "title": "DevOps / Platform Engineer",
+      "title": "DevOps / Platform Fresher",
       "email": "hai.vo.devops@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/haivo-devops",
@@ -708,7 +708,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Hai Vo",
-      "title": "Senior Infrastructure Engineer",
+      "title": "Infrastructure Engineer (early-career)",
       "email": "hai.vo.devops@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/haivo-devops",
@@ -808,7 +808,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Sam Hoang",
-      "title": "Associate Product Manager",
+      "title": "Associate Product Manager (Fresher)",
       "email": "sam.hoang.pm@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/samhoang-pm",
@@ -866,7 +866,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Sam Hoang",
-      "title": "Senior Product Manager",
+      "title": "Product Manager (early-career)",
       "email": "sam.hoang.pm@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/samhoang-pm",
@@ -966,7 +966,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Taylor Nguyen",
-      "title": "Growth Product Manager",
+      "title": "Growth PM Fresher",
       "email": "taylor.ng.growth@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/taylornguyen-growth",
@@ -1016,7 +1016,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Taylor Nguyen",
-      "title": "Lead Growth PM",
+      "title": "Growth PM (early-career)",
       "email": "taylor.ng.growth@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/taylornguyen-growth",
@@ -1116,7 +1116,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Jordan Do",
-      "title": "Business Analyst",
+      "title": "Business Analyst Fresher",
       "email": "jordan.do.ba@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/jordando-ba",
@@ -1166,7 +1166,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Jordan Do",
-      "title": "Senior Business Analyst",
+      "title": "Business Analyst (early-career)",
       "email": "jordan.do.ba@gmail.com",
       "location": "Ho Chi Minh City, Vietnam",
       "linkedin": "linkedin.com/in/jordando-ba",
@@ -1266,7 +1266,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Morgan Bui",
-      "title": "Product Designer",
+      "title": "Product Designer Fresher",
       "email": "morgan.bui.ux@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/morganbui-ux",
@@ -1316,7 +1316,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Morgan Bui",
-      "title": "Senior Product Designer",
+      "title": "Product Designer (early-career)",
       "email": "morgan.bui.ux@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/morganbui-ux",
@@ -1416,7 +1416,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Cameron Tran",
-      "title": "Sales Development Representative",
+      "title": "Sales Development Fresher",
       "email": "cameron.tran.se@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/camerontran-se",
@@ -1465,7 +1465,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Cameron Tran",
-      "title": "Enterprise Account Executive",
+      "title": "Sales Graduate (early-career)",
       "email": "cameron.tran.se@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/camerontran-se",
@@ -1565,7 +1565,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Minh Truong",
-      "title": "Solutions Architect",
+      "title": "Solutions Engineer Fresher",
       "email": "minh.truong.sa@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/minhtruong-sa",
@@ -1614,7 +1614,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Minh Truong",
-      "title": "Senior Solutions Architect",
+      "title": "Solutions Architect (early-career)",
       "email": "minh.truong.sa@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/minhtruong-sa",
@@ -1714,7 +1714,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Riley Pham",
-      "title": "Partnerships Manager",
+      "title": "Partnerships Fresher",
       "email": "riley.pham.partner@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/rileypham-bd",
@@ -1763,7 +1763,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Riley Pham",
-      "title": "Head of Partnerships",
+      "title": "Partnerships (early-career)",
       "email": "riley.pham.partner@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/rileypham-bd",
@@ -1863,7 +1863,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Riley Vo",
-      "title": "Operations Specialist",
+      "title": "Operations Fresher",
       "email": "riley.vo.ops@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/rileyvo-ops",
@@ -1912,7 +1912,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Riley Vo",
-      "title": "Operations Manager",
+      "title": "Operations (early-career)",
       "email": "riley.vo.ops@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/rileyvo-ops",
@@ -2012,7 +2012,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Quang Tran",
-      "title": "Machine Learning Engineer",
+      "title": "ML Engineer Fresher",
       "email": "quang.tran.ai@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/quangtran-ai",
@@ -2061,7 +2061,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Quang Tran",
-      "title": "Senior AI/ML Engineer",
+      "title": "ML Engineer (early-career)",
       "email": "quang.tran.ai@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/quangtran-ai",
@@ -2161,7 +2161,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Alex Hoang",
-      "title": "AI Product Manager",
+      "title": "AI Product Manager Fresher",
       "email": "alex.hoang.aipm@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/alexhoang-aipm",
@@ -2210,7 +2210,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Alex Hoang",
-      "title": "Senior AI Product Manager",
+      "title": "AI Product Manager (early-career)",
       "email": "alex.hoang.aipm@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/alexhoang-aipm",
@@ -2310,7 +2310,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Chris Le",
-      "title": "Prompt Engineer",
+      "title": "Prompt / AI Fresher",
       "email": "chris.le.prompt@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/chrisle-prompt",
@@ -2359,7 +2359,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Chris Le",
-      "title": "Lead Prompt / AI Systems Engineer",
+      "title": "Prompt / AI Engineer (early-career)",
       "email": "chris.le.prompt@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/chrisle-prompt",
@@ -2459,7 +2459,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "developing": {
       "name": "Thanh Nguyen",
-      "title": "Data Scientist",
+      "title": "Data Scientist Fresher",
       "email": "thanh.nguyen.ds@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/thanhnguyen-ds",
@@ -2508,7 +2508,7 @@ export const EXPANDED_CV_TEMPLATES: Record<string, any> =
     },
     "ready": {
       "name": "Thanh Nguyen",
-      "title": "Senior Data Scientist",
+      "title": "Data Scientist (early-career)",
       "email": "thanh.nguyen.ds@gmail.com",
       "location": "Vietnam",
       "linkedin": "linkedin.com/in/thanhnguyen-ds",

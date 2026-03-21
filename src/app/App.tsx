@@ -10,7 +10,7 @@ import { trackEvent } from "../utils/analytics";
 
 export default function App() {
   const [screen, setScreen] = useState<0 | 1 | 3 | 4>(0);
-  const [selectedPillar, setSelectedPillar] = useState<string | null>("product");
+  const [selectedPillar, setSelectedPillar] = useState<string | null>("engineering");
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [workspaceLevel, setWorkspaceLevel] = useState<DiagnosticLevel>("developing");
   const [builtBullet, setBuiltBullet] = useState<string>("");
@@ -85,7 +85,10 @@ export default function App() {
               selectedPillar={selectedPillar}
               selectedRole={selectedRole}
               onSelectPillar={(p) => {
-                setSelectedPillar(p);
+                setSelectedPillar((cur) => {
+                  if (cur === p) return null;
+                  return p;
+                });
                 setSelectedRole(null);
               }}
               onSelectRole={(r) => {
